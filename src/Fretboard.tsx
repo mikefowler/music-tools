@@ -2,7 +2,7 @@ import { Position } from '@moonwave99/fretboard.js';
 import { Box, IconButton, Stack, Tooltip } from '@mui/joy';
 import { get as getScale } from '@tonaljs/scale';
 import html2canvas from 'html2canvas';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   MdOutlineFileCopy,
   MdOutlineRestartAlt,
@@ -33,10 +33,6 @@ const Fretboard: React.FC<FretboardProps> = ({ id, editable }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const fretboardRef = useRef<HTMLElement | null>(null);
   const [dots, setDots] = useState<Position[]>([]);
-
-  useEffect(() => {
-    containerRef.current?.classList.add(styles.fretboard);
-  }, [containerRef]);
 
   const fretboard = useFretboard({
     el: `#${id}`,
@@ -135,7 +131,7 @@ const Fretboard: React.FC<FretboardProps> = ({ id, editable }) => {
   }
 
   return (
-    <Box ref={containerRef} className={styles.fretboard} sx={{ padding: 0 }}>
+    <Box ref={containerRef} sx={{ padding: 0 }}>
       <Box display="flex" justifyContent="space-between" marginX={3}>
         <Box>
           <EditableText initialValue="Placeholder" />
