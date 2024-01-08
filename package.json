@@ -1,0 +1,29 @@
+{
+  "devDependencies": {
+    "@parcel/transformer-sass": "2.11.0",
+    "@types/react": "^18.2.46",
+    "parcel": "^2.11.0",
+    "parcel-transformer-ts-css-modules": "^1.0.14",
+    "postcss": "^8.2.1",
+    "postcss-modules": "^4.3.0",
+    "process": "^0.11.10"
+  },
+  "scripts": {
+    "start": "parcel src/index.html --watch-dir ../",
+    "watch": "parcel watch",
+    "build": "parcel build"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/inter": "^5.0.16",
+    "@moonwave99/fretboard.js": "^0.2.13",
+    "@mui/joy": "^5.0.0-beta.21",
+    "@mui/material": "^5.15.3",
+    "@tonaljs/scale": "^4.12.3",
+    "html2canvas": "^1.4.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.12.0"
+  }
+}

@@ -1,0 +1,16 @@
+.fretboard-image {
+  margin: 0;
+
+  &.show-moving-dot {
+    :global {
+      .dot-moving {
+        visibility: visible;
+      }
+    }
+  }
+  :global {
+    .dot-moving {
+      visibility: hidden;
+    }
+  }
+}
