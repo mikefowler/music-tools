@@ -117,7 +117,7 @@ const Fretboard: React.FC<FretboardProps> = ({ id, editable }) => {
       };
 
       const existingDotIndex = dots.findIndex(
-        (x) => x.fret === fret && x.string === string
+        (x) => x.fret === fret && x.string === string,
       );
 
       if (existingDotIndex < 0) {
@@ -134,7 +134,7 @@ const Fretboard: React.FC<FretboardProps> = ({ id, editable }) => {
     <Box ref={containerRef} sx={{ padding: 0 }}>
       <Box display="flex" justifyContent="space-between" marginX={3}>
         <Box>
-          <EditableText initialValue="Placeholder" />
+          <EditableText autoFocus initialValue="Diagram title" />
         </Box>
         <Box displayPrint="none">
           <Stack direction="row">

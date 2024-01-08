@@ -6,14 +6,17 @@
     "parcel-transformer-ts-css-modules": "^1.0.14",
     "postcss": "^8.2.1",
     "postcss-modules": "^4.3.0",
+    "prettier": "^3.1.1",
     "process": "^0.11.10",
     "shx": "^0.3.4"
   },
   "scripts": {
+    "clean": "shx rm -rf dist/*",
+    "prestart": "yarn clean",
     "start": "parcel src/index.html --watch-dir ../",
-    "prebuild-dev": "shx rm -rf dist/*",
+    "prebuild-dev": "yarn clean",
     "build-dev": "parcel build ./src/index.html --no-optimize --public-url ./",
-    "prebuild": "shx rm -rf dist/*",
+    "prebuild": "yarn clean",
     "build": "parcel build src/index.html --public-url ./",
     "predeploy": "yarn build",
     "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose"

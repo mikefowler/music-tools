@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Box, Input } from '@mui/joy';
 import { SxProps, Theme } from '@mui/material/styles';
@@ -6,15 +6,23 @@ import { SxProps, Theme } from '@mui/material/styles';
 export interface EditableTextProps {
   initialValue?: string;
   sx?: SxProps<Theme>;
+  autoFocus?: boolean;
 }
 
 const EditableText: React.FC<EditableTextProps> = ({
   initialValue = '',
   sx,
+  autoFocus = false,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(autoFocus);
   const [value, setValue] = useState(initialValue);
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (autoFocus) {
+      inputRef.current?.select();
+    }
+  }, []);
 
   const handleClick = () => {
     setIsEditing(true);
@@ -60,6 +68,7 @@ const EditableText: React.FC<EditableTextProps> = ({
           onBlur={handleBlur}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          autoFocus={autoFocus}
           value={value}
           sx={[
             { border: 'none', padding: 2, minWidth: '200px' },

@@ -11,7 +11,7 @@ export interface Settings {
 }
 
 const defaultSettings: Settings = {
-  fretboardCount: 1,
+  fretboardCount: 0,
   useGridView: false,
 };
 

@@ -12,10 +12,14 @@ export interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onPressAddFretboard }) => {
   const { settings, toggleGridView } = useSettings();
 
-  console.log({ settings });
-
   return (
-    <Box component="header" p={4} displayPrint="none">
+    <Box
+      component="header"
+      p={4}
+      displayPrint="none"
+      sx={{ position: 'sticky', top: 0, background: 'white' }}
+      zIndex={10}
+    >
       <Box display="flex" justifyContent="space-between">
         <Box
           display="flex"
@@ -38,7 +42,9 @@ const Header: React.FC<HeaderProps> = ({ onPressAddFretboard }) => {
                 </IconButton>
               </Tooltip>
             )}
-            <Button onClick={onPressAddFretboard}>Add Fretboard</Button>
+            {settings.fretboardCount > 0 && (
+              <Button onClick={onPressAddFretboard}>Add Fretboard</Button>
+            )}
           </Stack>
         </Box>
       </Box>
