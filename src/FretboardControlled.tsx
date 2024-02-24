@@ -1,6 +1,6 @@
 import { Position } from '@moonwave99/fretboard.js';
-import { get as getScale } from '@tonaljs/scale';
 import React, { useEffect, useRef } from 'react';
+import { Scale } from 'tonal';
 
 import EditableText from './EditableText';
 import * as styles from './Fretboard.module.scss';
@@ -12,8 +12,8 @@ const fretboardNotes = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4']
   .map((note) => {
     const [noteName, octave] = note.split('');
     return [
-      ...getScale(`${note} chromatic`).notes,
-      ...getScale(`${noteName}${+octave + 1} chromatic`).notes,
+      ...Scale.get(`${note} chromatic`).notes,
+      ...Scale.get(`${noteName}${+octave + 1} chromatic`).notes,
     ];
   });
 
@@ -91,7 +91,7 @@ const FretboardControlled: React.FC<FretboardControlledProps> = ({
       };
 
       const existingDotIndex = dots.findIndex(
-        (x) => x.fret === fret && x.string === string
+        (x) => x.fret === fret && x.string === string,
       );
 
       if (existingDotIndex < 0) {

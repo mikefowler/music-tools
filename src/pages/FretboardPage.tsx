@@ -1,29 +1,40 @@
 import '@fontsource/inter';
 
-import { Box, Button } from '@mui/joy';
+import { Box, Button, IconButton, Tooltip } from '@mui/joy';
 import React from 'react';
 
-import EditableText from './EditableText';
-import Fretboard from './Fretboard';
-import Header from './Header';
-import { useSettings } from './providers/SettingsProvider';
+import { MdGridOff, MdGridOn } from 'react-icons/md';
+import EditableText from '../EditableText';
+import Fretboard from '../Fretboard';
+import { useSettings } from '../providers/SettingsProvider';
 
-const App: React.FC = () => {
-  const { settings, addFretboard } = useSettings();
+const FretboardPage: React.FC = () => {
+  const { settings, addFretboard, toggleGridView } = useSettings();
 
   return (
     <>
-      <Header onPressAddFretboard={addFretboard} />
+      {settings.fretboardCount > 1 && (
+        <Tooltip title="Display fretboards in grid">
+          <IconButton onClick={toggleGridView}>
+            {settings.useGridView ? <MdGridOn /> : <MdGridOff />}
+          </IconButton>
+        </Tooltip>
+      )}
+      {settings.fretboardCount > 0 && (
+        <Button onClick={addFretboard}>Add Fretboard</Button>
+      )}
 
       {settings.fretboardCount === 0 && (
         <Box textAlign="center" pt={8}>
           <Box mb={3}>Click on "Add Fretboard" to get started.</Box>
 
-          <Button size="lg" onClick={addFretboard}>Add Fretboard</Button>
+          <Button size="lg" onClick={addFretboard}>
+            Add Fretboard
+          </Button>
         </Box>
       )}
 
-      {settings.fretboardCount > 0    && (
+      {settings.fretboardCount > 0 && (
         <>
           <Box display="flex" flexDirection="row" justifyContent="center">
             <EditableText
@@ -47,4 +58,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default FretboardPage;

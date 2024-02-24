@@ -1,12 +1,13 @@
-import React, { PropsWithChildren } from 'react';
 import { CssBaseline, CssVarsProvider } from '@mui/joy';
+import React, { PropsWithChildren } from 'react';
 
-import SettingsProvider from './SettingsProvider';
+import theme from '../utils/theme';
 import IconsProvider from './IconsProvider';
+import SettingsProvider from './SettingsProvider';
 
 const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <CssVarsProvider>
+    <CssVarsProvider theme={theme}>
       <CssBaseline />
       <SettingsProvider>
         <IconsProvider>{children}</IconsProvider>
