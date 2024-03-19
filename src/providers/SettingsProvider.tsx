@@ -4,21 +4,30 @@ import React, {
   useContext,
   useState,
 } from 'react';
-
+import { KeyType } from '../components/KeySlider';
 export interface Settings {
-  fretboardCount: number;
-  useGridView: boolean;
+  // Key + Mode
+  tonic: KeyType;
+  mode: string;
+
+  // Drawer
+  drawerIsOpen: boolean;
 }
 
 const defaultSettings: Settings = {
-  fretboardCount: 0,
-  useGridView: false,
+  // Tonic + Mode
+  tonic: 'C',
+  mode: 'ionian',
+
+  // Drawer
+  drawerIsOpen: false,
 };
 
 export interface IAppContext {
   settings: Settings;
-  toggleGridView: () => void;
-  addFretboard: () => void;
+  setTonic: (tonic: KeyType) => void;
+  setMode: (mode: string) => void;
+  toggleDrawer: (open?: boolean) => void;
 }
 
 const SettingsContext = createContext<IAppContext | undefined>(undefined);
@@ -36,27 +45,25 @@ export const useSettings = () => {
 const SettingsProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [settings, setSettings] = useState<Settings>(defaultSettings);
 
-  const toggleGridView = () =>
-    setSettings((current) => ({
-      ...current,
-      useGridView: !current.useGridView,
+  const toggleDrawer = (open?: boolean) =>
+    setSettings((previous) => ({
+      ...previous,
+      drawerIsOpen: open || !previous.drawerIsOpen,
     }));
 
-  const addFretboard = () => {
-    console.log('addFretboard');
+  const setTonic = (tonic: KeyType) =>
+    setSettings((previous) => ({ ...previous, tonic }));
 
-    setSettings((current) => ({
-      ...current,
-      fretboardCount: current.fretboardCount + 1,
-    }));
-  };
+  const setMode = (mode: string) =>
+    setSettings((previous) => ({ ...previous, mode }));
 
   return (
     <SettingsContext.Provider
       value={{
         settings,
-        addFretboard,
-        toggleGridView,
+        setTonic,
+        setMode,
+        toggleDrawer,
       }}
     >
       {children}

@@ -1,10 +1,29 @@
-import { Box, Link, Stack, SvgIcon } from '@mui/joy';
+import {
+  Box,
+  DialogContent,
+  DialogTitle,
+  Drawer,
+  FormControl,
+  FormLabel,
+  IconButton,
+  Link,
+  ModalClose,
+  Stack,
+  SvgIcon,
+  Typography,
+} from '@mui/joy';
 import React from 'react';
-import { FaGuitar } from 'react-icons/fa';
+import { FaGear, FaGuitar } from 'react-icons/fa6';
+
+import { useSettings } from '../providers/SettingsProvider';
+import KeySlider from './KeySlider';
+import ModeSelect from './ModeSelect';
 
 export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
+  const { settings, toggleDrawer, setTonic, setMode } = useSettings();
+
   return (
     <Box
       component="header"
@@ -22,18 +41,63 @@ const Header: React.FC<HeaderProps> = () => {
             alignItems="center"
           >
             <SvgIcon inheritViewBox component={FaGuitar} size="lg" />
-            <Box display="inline-block" sx={{ fontSize: 24 }}>
-              Music Tools
-            </Box>
+            <Typography fontSize={24}>Music Tools</Typography>
           </Box>
         </Link>
         <Box>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={4}>
             <Link href="/fretboard">Fretboard</Link>
             <Link href="/chords">Chords</Link>
+            <Link href="/sheet">Sheet</Link>
+            <IconButton onClick={() => toggleDrawer()} variant="outlined">
+              <FaGear />
+            </IconButton>
           </Stack>
         </Box>
       </Box>
+
+      <Drawer open={settings.drawerIsOpen} onClose={() => toggleDrawer(false)}>
+        <DialogTitle>Settings</DialogTitle>
+        <ModalClose />
+        <DialogContent>
+          <Stack useFlexGap spacing={8} sx={{ p: 3 }}>
+            <FormControl>
+              <FormLabel
+                id="select-tonic-label"
+                htmlFor="select-tonic-input"
+                sx={{ margin: '0 auto', fontWeight: 'bold' }}
+              >
+                Tonic
+              </FormLabel>
+              <KeySlider
+                keyValue={settings.tonic}
+                onSelectKey={setTonic}
+                orientation="horizontal"
+                slotProps={{
+                  input: {
+                    id: 'select-tonic-input',
+                  },
+                }}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel
+                id="select-mode-label"
+                htmlFor="select-mode-input"
+                sx={{ margin: '0 auto', fontWeight: 'bold', mb: 2 }}
+              >
+                Mode
+              </FormLabel>
+              <ModeSelect
+                value={settings.mode}
+                onSelectMode={setMode}
+                slotProps={{ button: { id: 'select-mode-select' } }}
+              />
+            </FormControl>
+          </Stack>
+        </DialogContent>
+      </Drawer>
     </Box>
   );
 };
