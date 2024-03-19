@@ -11,10 +11,11 @@ import Layout from './layouts/Layout';
 import ChordsPage from './pages/ChordsPage';
 import FretboardPage from './pages/FretboardPage';
 import HomePage from './pages/HomePage';
+import SheetPage from './pages/SheetPage';
 import AppProvider from './providers/AppProvider';
 
 const container = document.getElementById('app');
-const root = createRoot(container);
+const root = createRoot(container!);
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,6 +23,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<HomePage />} />
       <Route path="/fretboard" element={<FretboardPage />} />
       <Route path="/chords" element={<ChordsPage />} />
+      <Route path="/sheet" element={<SheetPage />} />
     </Route>,
   ),
 );
