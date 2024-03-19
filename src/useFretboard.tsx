@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 export type FretboardOptions = Options;
 
 const useFretboard = (options: Partial<Options>) => {
-  const [fretboard, setFretboard] = useState<Fretboard | null>(null);
+  const [fretboard, setFretboard] = useState<Fretboard>();
 
   useEffect(() => {
     if (!fretboard) {

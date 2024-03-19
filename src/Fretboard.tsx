@@ -1,7 +1,13 @@
-import { Position } from '@moonwave99/fretboard.js';
+import { Fretboard as FretboardJs, Position } from '@moonwave99/fretboard.js';
 import { Box, IconButton, Stack, Tooltip } from '@mui/joy';
 import html2canvas from 'html2canvas';
-import React, { useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import {
   MdOutlineFileCopy,
   MdOutlineRestartAlt,
@@ -11,7 +17,6 @@ import { Scale } from 'tonal';
 
 import EditableText from './EditableText';
 import * as styles from './Fretboard.module.scss';
-import useFretboard from './useFretboard';
 
 /** Two octaves of notes for each of the six strings on the neck */
 const fretboardNotes = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4']
@@ -29,146 +34,157 @@ interface FretboardProps {
   editable?: boolean;
 }
 
-const Fretboard: React.FC<FretboardProps> = ({ id, editable }) => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const fretboardRef = useRef<HTMLElement | null>(null);
-  const [dots, setDots] = useState<Position[]>([]);
+const Fretboard = forwardRef<FretboardJs | undefined, FretboardProps>(
+  ({ id, editable }, ref) => {
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const fretboardRef = useRef<HTMLElement | null>(null);
+    const [controller, setController] = useState<FretboardJs>();
+    const [dots, setDots] = useState<Position[]>([]);
 
-  const fretboard = useFretboard({
-    el: `#${id}`,
-    fretCount: 22,
-    bottomPadding: 0,
-    dotText: ({ note }) => note,
-    dotFill: '#BFC9DE',
-    dotStrokeWidth: 0,
-    dotSize: 24,
-    leftPadding: 24,
-    rightPadding: 24,
-  });
-
-  const handleSaveImage = async () => {
-    if (!fretboardRef.current) return;
-
-    const canvas = await html2canvas(fretboardRef.current);
-    const jpg = canvas.toDataURL();
-
-    const link = document.createElement('a');
-    link.href = jpg;
-    link.download = `fretboard-${Date.now().valueOf()}`;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleCopyImage = async () => {
-    if (!fretboardRef.current) return;
-
-    const canvas = await html2canvas(fretboardRef.current);
-    const jpg = await new Promise<Blob>((resolve) => {
-      canvas.toBlob((blob) => {
-        if (blob) resolve(blob);
+    useEffect(() => {
+      const fretboard = new FretboardJs({
+        el: `#${id}`,
+        fretCount: 22,
+        bottomPadding: 0,
+        dotText: ({ note }) => note,
+        dotFill: '#BFC9DE',
+        dotStrokeWidth: 0,
+        dotSize: 24,
+        leftPadding: 24,
+        rightPadding: 24,
       });
-    });
-    navigator.clipboard.write([new ClipboardItem({ 'image/png': jpg })]);
-  };
 
-  const handleReset = () => {
-    fretboard?.clear();
-  };
+      setController(fretboard);
 
-  if (editable) {
-    fretboard?.on('mousemove', ({ fret, string }) => {
-      const note = fretboardNotes[string - 1][fret];
+      fretboard.render();
+    }, []);
 
-      const dot: Position = {
-        fret,
-        string,
-        note: note.substring(0, note.length - 1),
-        moving: true,
-      };
+    useImperativeHandle(ref, () => controller, [controller]);
 
-      const dotsToRender = [...dots];
+    const handleSaveImage = async () => {
+      if (!fretboardRef.current) return;
 
-      if (!dotsToRender.find((x) => x.fret === fret && x.string === string)) {
-        dotsToRender.push(dot);
-      }
+      const canvas = await html2canvas(fretboardRef.current);
+      const jpg = canvas.toDataURL();
 
-      fretboard.setDots(dotsToRender).render();
-    });
+      const link = document.createElement('a');
+      link.href = jpg;
+      link.download = `fretboard-${Date.now().valueOf()}`;
 
-    fretboard?.on('mouseleave', () => {
-      fretboardRef.current?.classList.remove(styles['show-moving-dot']);
-      fretboard.setDots(dots).render();
-    });
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
 
-    fretboard?.on('mouseenter', () => {
-      fretboardRef.current?.classList.add(styles['show-moving-dot']);
-      fretboard.setDots(dots).render();
-    });
+    const handleCopyImage = async () => {
+      if (!fretboardRef.current) return;
 
-    fretboard?.on('click', ({ fret, string }) => {
-      const note = fretboardNotes[string - 1][fret];
+      const canvas = await html2canvas(fretboardRef.current);
+      const jpg = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+        });
+      });
+      navigator.clipboard.write([new ClipboardItem({ 'image/png': jpg })]);
+    };
 
-      const dot: Position = {
-        fret,
-        string,
-        note: note.substring(0, note.length - 1),
-      };
+    const handleReset = () => {
+      controller?.clear();
+    };
 
-      const existingDotIndex = dots.findIndex(
-        (x) => x.fret === fret && x.string === string,
-      );
+    if (editable) {
+      controller?.on('mousemove', ({ fret, string }) => {
+        const note = fretboardNotes[string - 1][fret];
 
-      if (existingDotIndex < 0) {
-        dots.push(dot);
-      } else {
-        dots.splice(existingDotIndex, 1);
-      }
+        const dot: Position = {
+          fret,
+          string,
+          note: note.substring(0, note.length - 1),
+          moving: true,
+        };
 
-      fretboard.setDots(dots).render();
-    });
-  }
+        const dotsToRender = [...dots];
 
-  return (
-    <Box ref={containerRef} sx={{ padding: 0 }}>
-      <Box display="flex" justifyContent="space-between" marginX={3}>
-        <Box>
-          <EditableText autoFocus initialValue="Diagram title" />
+        if (!dotsToRender.find((x) => x.fret === fret && x.string === string)) {
+          dotsToRender.push(dot);
+        }
+
+        controller.setDots(dotsToRender).render();
+      });
+
+      controller?.on('mouseleave', () => {
+        fretboardRef.current?.classList.remove(styles['show-moving-dot']);
+        controller.setDots(dots).render();
+      });
+
+      controller?.on('mouseenter', () => {
+        fretboardRef.current?.classList.add(styles['show-moving-dot']);
+        controller.setDots(dots).render();
+      });
+
+      controller?.on('click', ({ fret, string }) => {
+        const note = fretboardNotes[string - 1][fret];
+
+        const dot: Position = {
+          fret,
+          string,
+          note: note.substring(0, note.length - 1),
+        };
+
+        const existingDotIndex = dots.findIndex(
+          (x) => x.fret === fret && x.string === string,
+        );
+
+        if (existingDotIndex < 0) {
+          dots.push(dot);
+        } else {
+          dots.splice(existingDotIndex, 1);
+        }
+
+        controller.setDots(dots).render();
+      });
+    }
+
+    return (
+      <Box ref={containerRef} sx={{ padding: 0 }}>
+        <Box display="flex" justifyContent="space-between" marginX={3}>
+          <Box>
+            <EditableText autoFocus initialValue="Diagram title" />
+          </Box>
+          <Box displayPrint="none">
+            <Stack direction="row">
+              <Tooltip title="Download fretboard as image">
+                <IconButton onClick={handleSaveImage}>
+                  <MdOutlineSave />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Copy fretboard to clipboard">
+                <IconButton onClick={handleCopyImage}>
+                  <MdOutlineFileCopy />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Clear all notes">
+                <IconButton onClick={handleReset}>
+                  <MdOutlineRestartAlt />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </Box>
         </Box>
-        <Box displayPrint="none">
-          <Stack direction="row">
-            <Tooltip title="Download fretboard as image">
-              <IconButton onClick={handleSaveImage}>
-                <MdOutlineSave />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Copy fretboard to clipboard">
-              <IconButton onClick={handleCopyImage}>
-                <MdOutlineFileCopy />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Clear all notes">
-              <IconButton onClick={handleReset}>
-                <MdOutlineRestartAlt />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        </Box>
+        <Box
+          component="figure"
+          id={id}
+          ref={fretboardRef}
+          className={styles['fretboard-image']}
+          sx={{
+            margin: 0,
+          }}
+        />
       </Box>
-      <Box
-        component="figure"
-        id={id}
-        ref={fretboardRef}
-        className={styles['fretboard-image']}
-        sx={{
-          margin: 0,
-        }}
-      />
-    </Box>
-  );
-};
+    );
+  },
+);
 
 export default Fretboard;
