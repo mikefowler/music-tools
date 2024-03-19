@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 
 import { MdGridOff, MdGridOn } from 'react-icons/md';
 import EditableText from '../EditableText';
-import Fretboard from '../Fretboard';
+import FretboardTemplate from '../FretboardTemplate';
 import { useSettings } from '../providers/SettingsProvider';
 
 const FretboardsPage: React.FC = () => {
@@ -54,7 +54,7 @@ const FretboardsPage: React.FC = () => {
             {Array(fretboardCount)
               .fill(0)
               .map((_, i) => (
-                <Fretboard id={`fretboard-${i}`} key={i} editable />
+                <FretboardTemplate id={`fretboard-${i}`} key={i} editable />
               ))}
           </Box>
         </>

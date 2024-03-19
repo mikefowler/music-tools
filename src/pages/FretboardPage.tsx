@@ -1,6 +1,6 @@
 import { Fretboard as FretboardJs } from '@moonwave99/fretboard.js';
 import React, { useEffect, useRef } from 'react';
-import Fretboard from '../Fretboard';
+import FretboardTemplate from '../FretboardTemplate';
 
 import { useSettings } from '../providers/SettingsProvider';
 
@@ -25,7 +25,7 @@ const FretboardPage: React.FC<FretboardPageProps> = ({ foo }) => {
     }, 100);
   }, []);
 
-  return <Fretboard id="fretboard" ref={fretboardRef} />;
+  return <FretboardTemplate id="fretboard" ref={fretboardRef} />;
 };
 
 export default FretboardPage;

@@ -1,18 +1,6 @@
-import React, {
-  PropsWithChildren,
-  createContext,
-  useContext,
-  useState,
-} from 'react';
+import React, { PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { KeyType } from '../components/KeySlider';
-export interface Settings {
-  // Key + Mode
-  tonic: KeyType;
-  mode: string;
-
-  // Drawer
-  drawerIsOpen: boolean;
-}
+import SettingsContext, { Settings } from './settingsContext';
 
 const defaultSettings: Settings = {
   // Tonic + Mode
@@ -22,15 +10,6 @@ const defaultSettings: Settings = {
   // Drawer
   drawerIsOpen: false,
 };
-
-export interface IAppContext {
-  settings: Settings;
-  setTonic: (tonic: KeyType) => void;
-  setMode: (mode: string) => void;
-  toggleDrawer: (open?: boolean) => void;
-}
-
-const SettingsContext = createContext<IAppContext | undefined>(undefined);
 
 export const useSettings = () => {
   const context = useContext(SettingsContext);
@@ -57,15 +36,20 @@ const SettingsProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const setMode = (mode: string) =>
     setSettings((previous) => ({ ...previous, mode }));
 
+  const context = useMemo(
+    () => ({
+      settings,
+      setTonic,
+      setMode,
+      toggleDrawer,
+    }),
+    [settings, setTonic, setMode, toggleDrawer],
+  );
+
+  console.log('SettingsProvider', { context });
+
   return (
-    <SettingsContext.Provider
-      value={{
-        settings,
-        setTonic,
-        setMode,
-        toggleDrawer,
-      }}
-    >
+    <SettingsContext.Provider value={context}>
       {children}
     </SettingsContext.Provider>
   );

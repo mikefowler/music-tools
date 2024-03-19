@@ -14,13 +14,15 @@ import {
 import Chord from '@tonaljs/chord';
 import Mode from '@tonaljs/mode';
 import uniq from 'lodash/uniq';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import {
   FaArrowRotateLeft,
   FaChevronDown,
   FaChevronRight,
   FaTrash,
 } from 'react-icons/fa6';
+import Fretboard from '../components/fretboard/Fretboard';
+import { FretboardProvider } from '../components/fretboard/FretboardContext';
 import { useSettings } from '../providers/SettingsProvider';
 
 export interface SheetPageProps {}
@@ -51,6 +53,7 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
 
   // Reset the state when the tonic or mode change
   useEffect(() => {
+    console.log('tonic or mode changed');
     setSelectedChords([]);
     setHighlightNote(undefined);
     setPreviewNote(undefined);
@@ -95,8 +98,8 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
     }, []),
   );
 
-  console.log('Selected chords: ', selectedChords.join(', '));
-  console.log('Selected notes: ', selectedNotes.join(', '));
+  // console.log('Selected chords: ', selectedChords.join(', '));
+  // console.log('Selected notes: ', selectedNotes.join(', '));
 
   return (
     <>
@@ -219,60 +222,76 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
                   const notes = fullChord.notes;
 
                   return (
-                    <tr key={c}>
-                      <th>
-                        <Tooltip title="Remove chord">
-                          <IconButton
-                            onClick={() => deselectChord(c)}
-                            sx={{
-                              '--IconButton-size': '22px',
-                            }}
-                          >
-                            <FaTrash />
-                          </IconButton>
-                        </Tooltip>
-                      </th>
+                    <Fragment key={c}>
+                      <tr>
+                        <th>
+                          <Tooltip title="Remove chord">
+                            <IconButton
+                              onClick={() => deselectChord(c)}
+                              sx={{
+                                '--IconButton-size': '22px',
+                              }}
+                            >
+                              <FaTrash />
+                            </IconButton>
+                          </Tooltip>
+                        </th>
 
-                      <th scope="row">{c}</th>
+                        <th scope="row">{c}</th>
 
-                      {Array(noteColumnCount)
-                        .fill(1)
-                        .map((_v, index) => {
-                          const note = notes[index];
-                          let selected = false;
-                          let color: ChipProps['color'];
+                        {Array(noteColumnCount)
+                          .fill(1)
+                          .map((_v, index) => {
+                            const note = notes[index];
+                            let selected = false;
+                            let color: ChipProps['color'];
 
-                          if (!note) return <td />;
+                            if (!note) return <td key={index} />;
 
-                          if (highlightNote === note) {
-                            selected = true;
-                            color = 'primary';
-                          } else if (previewNote === note) {
-                            color = 'success';
-                          } else {
-                            color = 'neutral';
-                          }
+                            if (highlightNote === note) {
+                              selected = true;
+                              color = 'primary';
+                            } else if (previewNote === note) {
+                              color = 'success';
+                            } else {
+                              color = 'neutral';
+                            }
 
-                          return (
-                            <td>
-                              <div
-                                onMouseOver={() => setPreviewNote(note)}
-                                onMouseOut={() => setPreviewNote(undefined)}
-                              >
-                                <Chip
-                                  variant={selected ? 'soft' : 'outlined'}
-                                  size="lg"
-                                  sx={{ fontSize: 18, px: 2 }}
-                                  color={color}
-                                  onClick={() => setHighlightNote(note)}
+                            return (
+                              <td key={note}>
+                                <div
+                                  onMouseOver={() => setPreviewNote(note)}
+                                  onMouseOut={() => setPreviewNote(undefined)}
                                 >
-                                  {note}
-                                </Chip>
-                              </div>
-                            </td>
-                          );
-                        })}
-                    </tr>
+                                  <Chip
+                                    variant={selected ? 'soft' : 'outlined'}
+                                    size="lg"
+                                    sx={{ fontSize: 18, px: 2 }}
+                                    color={color}
+                                    onClick={() => setHighlightNote(note)}
+                                  >
+                                    {note}
+                                  </Chip>
+                                </div>
+                              </td>
+                            );
+                          })}
+                      </tr>
+                      <tr>
+                        <td colSpan={noteColumnCount + 2}>
+                          <FretboardProvider>
+                            <Fretboard
+                              id={`fretboard-${c}`}
+                              positions={[
+                                { string: 5, fret: 3 },
+                                { string: 4, fret: 2 },
+                                { string: 2, fret: 1 },
+                              ]}
+                            />
+                          </FretboardProvider>
+                        </td>
+                      </tr>
+                    </Fragment>
                   );
                 })}
               </tbody>
