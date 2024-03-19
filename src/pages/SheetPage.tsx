@@ -22,7 +22,6 @@ import {
   FaTrash,
 } from 'react-icons/fa6';
 import Fretboard from '../components/fretboard/Fretboard';
-import { FretboardProvider } from '../components/fretboard/FretboardContext';
 import { useSettings } from '../providers/SettingsProvider';
 
 export interface SheetPageProps {}
@@ -217,7 +216,7 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
                 </tr>
               </thead>
               <tbody>
-                {selectedChords.map((c) => {
+                {selectedChords.map((c, index) => {
                   const fullChord = Chord.get(c);
                   const notes = fullChord.notes;
 
@@ -279,16 +278,14 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
                       </tr>
                       <tr>
                         <td colSpan={noteColumnCount + 2}>
-                          <FretboardProvider>
-                            <Fretboard
-                              id={`fretboard-${c}`}
-                              positions={[
-                                { string: 5, fret: 3 },
-                                { string: 4, fret: 2 },
-                                { string: 2, fret: 1 },
-                              ]}
-                            />
-                          </FretboardProvider>
+                          <Fretboard
+                            id={`fretboard-${c}`}
+                            notes={[
+                              { string: 5, fret: index },
+                              { string: 4, fret: 2 },
+                              { string: 2, fret: 1 },
+                            ]}
+                          />
                         </td>
                       </tr>
                     </Fragment>
