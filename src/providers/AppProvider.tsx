@@ -1,4 +1,4 @@
-import { CssBaseline, CssVarsProvider } from '@mui/joy';
+import { CssBaseline, CssVarsProvider, GlobalStyles } from '@mui/joy';
 import React, { PropsWithChildren } from 'react';
 
 import theme from '../utils/theme';
@@ -9,6 +9,14 @@ const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <CssVarsProvider theme={theme}>
       <CssBaseline />
+      <GlobalStyles
+        styles={{
+          ['text.dot-text']: {
+            fill: 'currentColor',
+          },
+        }}
+      />
+
       <SettingsProvider>
         <IconsProvider>{children}</IconsProvider>
       </SettingsProvider>

@@ -1,4 +1,5 @@
 import { Fretboard as FretboardJs, Position } from '@moonwave99/fretboard.js';
+
 import merge from 'lodash/merge';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -19,9 +20,17 @@ interface FretboardProps {
   id: string;
   notes?: Position[];
   frets?: number;
+  dotTextColor?: string;
+  dotFill?: string | ((options: { note: string }) => string);
 }
 
-const Fretboard: React.FC<FretboardProps> = ({ id, frets, notes }) => {
+const Fretboard: React.FC<FretboardProps> = ({
+  id,
+  frets,
+  notes,
+  dotFill,
+  dotTextColor = 'white',
+}) => {
   const [fretboard, setFretboard] = useState(defaultFretboard);
 
   const el = useRef<HTMLDivElement | null>(null);
@@ -29,13 +38,18 @@ const Fretboard: React.FC<FretboardProps> = ({ id, frets, notes }) => {
   const handleSetOptions = useCallback(() => {
     console.log('<Fretboard /> handleSetOptions');
 
+    if (el.current) {
+      el.current.innerHTML = '';
+    }
+
     const nextOptions = merge(defaultOptions, {
       el: `#${id}`,
       fretCount: frets,
+      dotFill,
     });
 
     setFretboard(new FretboardJs(nextOptions));
-  }, [id, frets]);
+  }, [id, frets, dotFill]);
 
   useEffect(() => {
     console.log('rerender', fretboard);
@@ -53,7 +67,7 @@ const Fretboard: React.FC<FretboardProps> = ({ id, frets, notes }) => {
     handleSetOptions();
   }, []);
 
-  return <div id={id} ref={el} />;
+  return <div id={id} ref={el} style={{ color: dotTextColor }} />;
 };
 
 export default Fretboard;

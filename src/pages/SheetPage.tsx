@@ -2,9 +2,9 @@ import {
   Box,
   Button,
   Chip,
-  ChipProps,
   Divider,
   IconButton,
+  Sheet,
   Stack,
   Table,
   ToggleButtonGroup,
@@ -14,14 +14,14 @@ import {
 import Chord from '@tonaljs/chord';
 import Mode from '@tonaljs/mode';
 import uniq from 'lodash/uniq';
-import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   FaArrowRotateLeft,
   FaChevronDown,
   FaChevronRight,
   FaTrash,
 } from 'react-icons/fa6';
-import Fretboard from '../components/fretboard/Fretboard';
+import ChordTableRow from '../components/chordTable/ChordTableRow';
 import { useSettings } from '../providers/SettingsProvider';
 
 export interface SheetPageProps {}
@@ -52,7 +52,6 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
 
   // Reset the state when the tonic or mode change
   useEffect(() => {
-    console.log('tonic or mode changed');
     setSelectedChords([]);
     setHighlightNote(undefined);
     setPreviewNote(undefined);
@@ -183,116 +182,57 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
               Chords
             </Typography>
 
-            <Table
-              variant="plain"
-              size="lg"
-              borderAxis="none"
-              sx={{
-                mt: 4,
-                '--TableCell-headBackground': 'transparent',
-                '& thead th:nth-child(1)': { width: '60px' },
-              }}
-            >
-              <thead>
-                <tr>
-                  <th>
-                    <Tooltip title="Remove all chords">
-                      <IconButton
-                        onClick={resetChords}
-                        sx={{
-                          '--IconButton-size': '22px',
-                        }}
-                      >
-                        <FaTrash />
-                      </IconButton>
-                    </Tooltip>
-                  </th>
-                  <th>Name</th>
-                  {Array(noteColumnCount)
-                    .fill(1)
-                    .map((_v, index) => (
-                      <th key={index} />
-                    ))}
-                </tr>
-              </thead>
-              <tbody>
-                {selectedChords.map((c, index) => {
-                  const fullChord = Chord.get(c);
-                  const notes = fullChord.notes;
-
-                  return (
-                    <Fragment key={c}>
-                      <tr>
-                        <th>
-                          <Tooltip title="Remove chord">
-                            <IconButton
-                              onClick={() => deselectChord(c)}
-                              sx={{
-                                '--IconButton-size': '22px',
-                              }}
-                            >
-                              <FaTrash />
-                            </IconButton>
-                          </Tooltip>
-                        </th>
-
-                        <th scope="row">{c}</th>
-
-                        {Array(noteColumnCount)
-                          .fill(1)
-                          .map((_v, index) => {
-                            const note = notes[index];
-                            let selected = false;
-                            let color: ChipProps['color'];
-
-                            if (!note) return <td key={index} />;
-
-                            if (highlightNote === note) {
-                              selected = true;
-                              color = 'primary';
-                            } else if (previewNote === note) {
-                              color = 'success';
-                            } else {
-                              color = 'neutral';
-                            }
-
-                            return (
-                              <td key={note}>
-                                <div
-                                  onMouseOver={() => setPreviewNote(note)}
-                                  onMouseOut={() => setPreviewNote(undefined)}
-                                >
-                                  <Chip
-                                    variant={selected ? 'soft' : 'outlined'}
-                                    size="lg"
-                                    sx={{ fontSize: 18, px: 2 }}
-                                    color={color}
-                                    onClick={() => setHighlightNote(note)}
-                                  >
-                                    {note}
-                                  </Chip>
-                                </div>
-                              </td>
-                            );
-                          })}
-                      </tr>
-                      <tr>
-                        <td colSpan={noteColumnCount + 2}>
-                          <Fretboard
-                            id={`fretboard-${c}`}
-                            notes={[
-                              { string: 5, fret: index },
-                              { string: 4, fret: 2 },
-                              { string: 2, fret: 1 },
-                            ]}
-                          />
-                        </td>
-                      </tr>
-                    </Fragment>
-                  );
-                })}
-              </tbody>
-            </Table>
+            <Sheet>
+              <Table
+                variant="plain"
+                size="lg"
+                borderAxis="none"
+                sx={{
+                  mt: 4,
+                  '& thead td:nth-child(1)': { width: '60px' },
+                  '& tbody td:nth-child(1)': { width: '60px' },
+                  '& thead td:nth-child(2)': { width: '60px' },
+                }}
+              >
+                <thead>
+                  <tr>
+                    <td />
+                    <td>
+                      <Tooltip title="Remove all chords">
+                        <IconButton
+                          onClick={resetChords}
+                          sx={{
+                            '--IconButton-size': '22px',
+                          }}
+                        >
+                          <FaTrash />
+                        </IconButton>
+                      </Tooltip>
+                    </td>
+                    <th scope="row">Name</th>
+                    {Array(noteColumnCount)
+                      .fill(1)
+                      .map((_v, index) => (
+                        <td key={index} />
+                      ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedChords.map((c, index) => (
+                    <ChordTableRow
+                      chord={c}
+                      highlightNote={highlightNote}
+                      previewNote={previewNote}
+                      onRemove={() => deselectChord(c)}
+                      onMouseOverNote={setPreviewNote}
+                      onMouseOutNote={() => setPreviewNote(undefined)}
+                      onPressNote={setHighlightNote}
+                      columnCount={noteColumnCount}
+                    />
+                  ))}
+                </tbody>
+              </Table>
+            </Sheet>
           </>
         )}
       </Box>

@@ -46,8 +46,6 @@ const SettingsProvider: React.FC<PropsWithChildren> = ({ children }) => {
     [settings, setTonic, setMode, toggleDrawer],
   );
 
-  console.log('SettingsProvider', { context });
-
   return (
     <SettingsContext.Provider value={context}>
       {children}
