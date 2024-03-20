@@ -20,8 +20,8 @@ interface FretboardProps {
   id: string;
   notes?: Position[];
   frets?: number;
-  dotTextColor?: string;
   dotFill?: string | ((options: { note: string }) => string);
+  dotTextColor?: string | ((options: { note: string }) => string);
 }
 
 const Fretboard: React.FC<FretboardProps> = ({
@@ -46,10 +46,15 @@ const Fretboard: React.FC<FretboardProps> = ({
       el: `#${id}`,
       fretCount: frets,
       dotFill,
+      dotTextColor,
     });
 
     setFretboard(new FretboardJs(nextOptions));
-  }, [id, frets, dotFill]);
+  }, [id, frets, dotFill, dotTextColor]);
+
+  useEffect(() => {
+    handleSetOptions();
+  }, [dotFill, dotTextColor]);
 
   useEffect(() => {
     console.log('rerender', fretboard);
@@ -57,7 +62,7 @@ const Fretboard: React.FC<FretboardProps> = ({
       fretboard.setDots(notes);
     }
     fretboard.render();
-  }, [fretboard, notes]);
+  }, [fretboard, notes, dotFill]);
 
   // When the component mounts, or when certain props change, update the
   // options on the underlying instance of Fretboard.js, which triggers
@@ -67,7 +72,7 @@ const Fretboard: React.FC<FretboardProps> = ({
     handleSetOptions();
   }, []);
 
-  return <div id={id} ref={el} style={{ color: dotTextColor }} />;
+  return <div id={id} ref={el} />;
 };
 
 export default Fretboard;

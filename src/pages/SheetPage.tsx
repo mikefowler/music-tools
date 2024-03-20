@@ -13,10 +13,10 @@ import {
 } from '@mui/joy';
 import Chord from '@tonaljs/chord';
 import Mode from '@tonaljs/mode';
-import uniq from 'lodash/uniq';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   FaArrowRotateLeft,
+  FaCheck,
   FaChevronDown,
   FaChevronRight,
   FaTrash,
@@ -32,6 +32,7 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
   const [selectedChords, setSelectedChords] = useState<string[]>([]);
   const [highlightNote, setHighlightNote] = useState<string | undefined>();
   const [previewNote, setPreviewNote] = useState<string | undefined>();
+  const [showScaleTones, setShowScaleTones] = useState(false);
 
   const toggleExtensions = () => setShowExtensions((prev) => !prev);
   const resetChords = () => setSelectedChords([]);
@@ -87,14 +88,6 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
   const selectedExtensionCount = selectedChords.filter(
     (c) => !diatonicChords.includes(c),
   ).length;
-
-  const selectedNotes = uniq(
-    selectedChords.reduce<string[]>((prev, next) => {
-      const chord = Chord.get(next);
-
-      return [...prev, ...chord.notes];
-    }, []),
-  );
 
   // console.log('Selected chords: ', selectedChords.join(', '));
   // console.log('Selected notes: ', selectedNotes.join(', '));
@@ -182,6 +175,19 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
               Chords
             </Typography>
 
+            <Stack my={2}>
+              <Chip
+                variant="outlined"
+                color={showScaleTones ? 'primary' : 'neutral'}
+                startDecorator={showScaleTones && <FaCheck />}
+                onClick={() => {
+                  setShowScaleTones((prev) => !prev);
+                }}
+              >
+                Show scale tones
+              </Chip>
+            </Stack>
+
             <Sheet>
               <Table
                 variant="plain"
@@ -228,6 +234,7 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
                       onMouseOutNote={() => setPreviewNote(undefined)}
                       onPressNote={setHighlightNote}
                       columnCount={noteColumnCount}
+                      showScaleTones={showScaleTones}
                     />
                   ))}
                 </tbody>
