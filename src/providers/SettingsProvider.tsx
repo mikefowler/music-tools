@@ -1,6 +1,14 @@
-import React, { PropsWithChildren, useContext, useMemo, useState } from 'react';
+import React, {
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { KeyType } from '../components/KeySlider';
 import SettingsContext, { Settings } from './settingsContext';
+
+const STORAGE_KEY = 'mt-settings';
 
 const defaultSettings: Settings = {
   // Tonic + Mode
@@ -9,6 +17,19 @@ const defaultSettings: Settings = {
 
   // Drawer
   drawerIsOpen: false,
+};
+
+const getInitialSettings = () => {
+  const persistedSettings = localStorage.getItem(STORAGE_KEY);
+
+  if (persistedSettings) {
+    return {
+      ...defaultSettings,
+      ...JSON.parse(persistedSettings),
+    };
+  }
+
+  return defaultSettings;
 };
 
 export const useSettings = () => {
@@ -22,7 +43,20 @@ export const useSettings = () => {
 };
 
 const SettingsProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [settings, setSettings] = useState<Settings>(getInitialSettings());
+
+  // Persist certain settings to localStorage
+  useEffect(() => {
+    const { tonic, mode } = settings;
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        tonic,
+        mode,
+      }),
+    );
+  }, [settings.mode, settings.tonic]);
 
   const toggleDrawer = (open?: boolean) =>
     setSettings((previous) => ({

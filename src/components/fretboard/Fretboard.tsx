@@ -36,7 +36,7 @@ const Fretboard: React.FC<FretboardProps> = ({
   const el = useRef<HTMLDivElement | null>(null);
 
   const handleSetOptions = useCallback(() => {
-    console.log('<Fretboard /> handleSetOptions');
+    // console.log('<Fretboard /> handleSetOptions');
 
     if (el.current) {
       el.current.innerHTML = '';
@@ -57,7 +57,7 @@ const Fretboard: React.FC<FretboardProps> = ({
   }, [dotFill, dotTextColor]);
 
   useEffect(() => {
-    console.log('rerender', fretboard);
+    // console.log('rerender', fretboard);
     if (notes) {
       fretboard.setDots(notes);
     }
@@ -68,7 +68,7 @@ const Fretboard: React.FC<FretboardProps> = ({
   // options on the underlying instance of Fretboard.js, which triggers
   // a re-render
   useEffect(() => {
-    console.log('<Fretboard /> mount', fretboard);
+    // console.log('<Fretboard /> mount', fretboard);
     handleSetOptions();
   }, []);
 

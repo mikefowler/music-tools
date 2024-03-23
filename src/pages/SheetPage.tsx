@@ -235,6 +235,7 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
                       onPressNote={setHighlightNote}
                       columnCount={noteColumnCount}
                       showScaleTones={showScaleTones}
+                      key={c}
                     />
                   ))}
                 </tbody>
