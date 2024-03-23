@@ -3,9 +3,6 @@ import {
   DialogContent,
   DialogTitle,
   Drawer,
-  FormControl,
-  FormLabel,
-  IconButton,
   Link,
   ModalClose,
   Stack,
@@ -13,16 +10,14 @@ import {
   Typography,
 } from '@mui/joy';
 import React from 'react';
-import { FaGear, FaGuitar } from 'react-icons/fa6';
+import { FaGuitar } from 'react-icons/fa6';
 
 import { useSettings } from '../providers/SettingsProvider';
-import KeySlider from './KeySlider';
-import ModeSelect from './ModeSelect';
 
 export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
-  const { settings, toggleDrawer, setTonic, setMode } = useSettings();
+  const { settings, toggleDrawer } = useSettings();
 
   return (
     <Box
@@ -49,9 +44,9 @@ const Header: React.FC<HeaderProps> = () => {
             <Link href="/fretboard">Fretboard</Link>
             <Link href="/chords">Chords</Link>
             <Link href="/sheet">Sheet</Link>
-            <IconButton onClick={() => toggleDrawer()} variant="outlined">
+            {/* <IconButton onClick={toggleDrawer} variant="outlined">
               <FaGear />
-            </IconButton>
+            </IconButton> */}
           </Stack>
         </Box>
       </Box>
@@ -59,44 +54,7 @@ const Header: React.FC<HeaderProps> = () => {
       <Drawer open={settings.drawerIsOpen} onClose={() => toggleDrawer(false)}>
         <DialogTitle>Settings</DialogTitle>
         <ModalClose />
-        <DialogContent>
-          <Stack useFlexGap spacing={8} sx={{ p: 3 }}>
-            <FormControl>
-              <FormLabel
-                id="select-tonic-label"
-                htmlFor="select-tonic-input"
-                sx={{ margin: '0 auto', fontWeight: 'bold' }}
-              >
-                Tonic
-              </FormLabel>
-              <KeySlider
-                keyValue={settings.tonic}
-                onSelectKey={setTonic}
-                orientation="horizontal"
-                slotProps={{
-                  input: {
-                    id: 'select-tonic-input',
-                  },
-                }}
-              />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel
-                id="select-mode-label"
-                htmlFor="select-mode-input"
-                sx={{ margin: '0 auto', fontWeight: 'bold', mb: 2 }}
-              >
-                Mode
-              </FormLabel>
-              <ModeSelect
-                value={settings.mode}
-                onSelectMode={setMode}
-                slotProps={{ button: { id: 'select-mode-select' } }}
-              />
-            </FormControl>
-          </Stack>
-        </DialogContent>
+        <DialogContent>{/* Placeholder */}</DialogContent>
       </Drawer>
     </Box>
   );

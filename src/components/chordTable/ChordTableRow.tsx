@@ -53,9 +53,10 @@ const ChordTableRow: React.FC<ChordTableRowProps> = ({
     allNotes = Array.from(new Set([...chordNotes, ...keyNotes]));
   }
 
-  // console.log({ chordNotes, keyNotes, allNotes });
-
   const dots = system.getPositionsForNotes(allNotes);
+
+  // console.log({ chordNotes, keyNotes, allNotes });
+  // console.log({ dots });
 
   return (
     <Fragment key={c}>
