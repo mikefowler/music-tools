@@ -6,7 +6,7 @@ import Scale from '../utils/Scale';
 
 export interface ChordsPageProps {}
 
-const ChordsPage: React.FC<ChordsPageProps> = ({}) => {
+const ChordsPage: React.FC<ChordsPageProps> = () => {
   const {
     settings: { tonic, mode },
   } = useSettings();
@@ -17,7 +17,7 @@ const ChordsPage: React.FC<ChordsPageProps> = ({}) => {
         tonic,
         mode,
       }),
-    [tonic, mode],
+    [tonic, mode]
   );
 
   const sequence = progression.sequence([1, 6, 4, 2, 5, 3]);
@@ -36,7 +36,7 @@ const ChordsPage: React.FC<ChordsPageProps> = ({}) => {
               />
             ) : (
               <Box width={width} />
-            ),
+            )
           )}
         </Stack>
 

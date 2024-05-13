@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export interface HomePageProps {}
 
-const HomePage: React.FC<HomePageProps> = ({}) => {
+const HomePage: React.FC<HomePageProps> = () => {
   return (
     <ul>
       <li>

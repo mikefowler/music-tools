@@ -5,18 +5,11 @@ import {
   NotePosition,
   ScalePosition,
 } from '@mikefowler/fretboard';
-import {
-  Chip,
-  ChipProps,
-  IconButton,
-  Sheet,
-  Tooltip,
-  useTheme,
-} from '@mui/joy';
+import { Chip, ChipProps, IconButton, Sheet, Tooltip } from '@mui/joy';
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaTrash } from 'react-icons/fa6';
 import { Chord } from 'tonal';
-import { useSettings } from '../../providers/SettingsProvider';
+import { useSettings } from '../providers/SettingsProvider';
 
 export interface ChordTableRowProps {
   chord: string;
@@ -41,7 +34,6 @@ const ChordTableRow: React.FC<ChordTableRowProps> = ({
   highlightNote,
   showScaleTones: showKeyTones,
 }) => {
-  const theme = useTheme();
   const fretboard = useRef<FretboardRef>(null);
   const { settings } = useSettings();
   const [open, setOpen] = useState(true);
@@ -62,11 +54,11 @@ const ChordTableRow: React.FC<ChordTableRowProps> = ({
     setChordPositions(
       positions.filter((position) => {
         return chordNotes.includes(
-          `${position.note.letter}${position.note.acc}`,
+          `${position.note.letter}${position.note.acc}`
         );
-      }),
+      })
     );
-  }, [fretboard]);
+  }, [fretboard, chordNotes, settings.mode, settings.tonic]);
 
   let renderedPositions = chordPositions;
 

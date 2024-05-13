@@ -1,5 +1,6 @@
 import React, {
   PropsWithChildren,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -54,21 +55,28 @@ const SettingsProvider: React.FC<PropsWithChildren> = ({ children }) => {
       JSON.stringify({
         tonic,
         mode,
-      }),
+      })
     );
-  }, [settings.mode, settings.tonic]);
+  }, [settings]);
 
-  const toggleDrawer = (open?: boolean) =>
-    setSettings((previous) => ({
-      ...previous,
-      drawerIsOpen: open || !previous.drawerIsOpen,
-    }));
+  const toggleDrawer = useCallback(
+    (open?: boolean) =>
+      setSettings((previous) => ({
+        ...previous,
+        drawerIsOpen: open || !previous.drawerIsOpen,
+      })),
+    []
+  );
 
-  const setTonic = (tonic: KeyType) =>
-    setSettings((previous) => ({ ...previous, tonic }));
+  const setTonic = useCallback(
+    (tonic: KeyType) => setSettings((previous) => ({ ...previous, tonic })),
+    []
+  );
 
-  const setMode = (mode: string) =>
-    setSettings((previous) => ({ ...previous, mode }));
+  const setMode = useCallback(
+    (mode: string) => setSettings((previous) => ({ ...previous, mode })),
+    []
+  );
 
   const context = useMemo(
     () => ({
@@ -77,7 +85,7 @@ const SettingsProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setMode,
       toggleDrawer,
     }),
-    [settings, setTonic, setMode, toggleDrawer],
+    [settings, setTonic, setMode, toggleDrawer]
   );
 
   return (

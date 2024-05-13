@@ -9,11 +9,9 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { useSettings } from '../providers/SettingsProvider';
 
-export interface FretboardPageProps {
-  foo?: boolean;
-}
+export interface FretboardPageProps {}
 
-const FretboardPage: React.FC<FretboardPageProps> = ({ foo }) => {
+const FretboardPage: React.FC<FretboardPageProps> = () => {
   const fretboard = useRef<FretboardRef>(null);
   const [notes, setNotes] = useState<NotePosition[]>([]);
 

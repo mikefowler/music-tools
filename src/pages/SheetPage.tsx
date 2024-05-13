@@ -21,12 +21,12 @@ import {
   FaChevronRight,
   FaTrash,
 } from 'react-icons/fa6';
-import ChordTableRow from '../components/chordTable/ChordTableRow';
+import ChordTableRow from '../components/ChordTableRow';
 import { useSettings } from '../providers/SettingsProvider';
 
 export interface SheetPageProps {}
 
-const SheetPage: React.FC<SheetPageProps> = ({}) => {
+const SheetPage: React.FC<SheetPageProps> = () => {
   const { settings } = useSettings();
   const [showExtensions, setShowExtensions] = useState(false);
   const [selectedChords, setSelectedChords] = useState<string[]>([]);
@@ -62,13 +62,13 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
     () =>
       new Map(
         diatonicChords.map((c) => {
-          const chord = Chord.get(c);
+          // const chord = Chord.get(c);
           const extendedChord = Chord.extended(c);
 
           return [c, extendedChord];
-        }),
+        })
       ),
-    [selectedChords],
+    [diatonicChords]
   );
 
   /** The number of columns required to render the notes for all selected chords */
@@ -79,14 +79,14 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
           const chord = Chord.get(c);
 
           return chord.notes.length ?? 0;
-        }),
+        })
       ),
-    [selectedChords],
+    [selectedChords]
   );
 
   // The number of chords that have been selected from the set of extensions
   const selectedExtensionCount = selectedChords.filter(
-    (c) => !diatonicChords.includes(c),
+    (c) => !diatonicChords.includes(c)
   ).length;
 
   return (
@@ -221,7 +221,7 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedChords.map((c, index) => (
+                  {selectedChords.map((c) => (
                     <ChordTableRow
                       chord={c}
                       highlightNote={highlightNote}

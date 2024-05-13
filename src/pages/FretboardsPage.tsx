@@ -6,12 +6,10 @@ import React, { useState } from 'react';
 import { Fretboard } from '@mikefowler/fretboard';
 import { MdGridOff, MdGridOn } from 'react-icons/md';
 import EditableText from '../EditableText';
-import { useSettings } from '../providers/SettingsProvider';
 
 const FretboardsPage: React.FC = () => {
   const [fretboardCount, setFretboardCount] = useState(1);
   const [useGrid, setUseGrid] = useState(false);
-  const { settings } = useSettings();
 
   const toggleGrid = () => setUseGrid((previous) => !previous);
   const addFretboard = () => setFretboardCount((previous) => previous + 1);
