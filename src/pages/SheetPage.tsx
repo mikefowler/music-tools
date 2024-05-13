@@ -89,9 +89,6 @@ const SheetPage: React.FC<SheetPageProps> = ({}) => {
     (c) => !diatonicChords.includes(c),
   ).length;
 
-  // console.log('Selected chords: ', selectedChords.join(', '));
-  // console.log('Selected notes: ', selectedNotes.join(', '));
-
   return (
     <>
       <Stack spacing={2}>

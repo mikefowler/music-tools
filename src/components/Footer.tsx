@@ -13,6 +13,7 @@ const Footer: React.FC<FooterProps> = () => {
       bottom={0}
       p={2}
       sx={(theme) => ({
+        zIndex: theme.zIndex.modal,
         background: theme.vars.palette.background.surface,
         boxShadow: theme.shadow.xl,
         '--joy-shadowRing': '0 -10px 20px rgba(0, 0, 0, 0.05)',

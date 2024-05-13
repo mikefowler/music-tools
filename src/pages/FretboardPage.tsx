@@ -1,6 +1,11 @@
-import { Fretboard as FretboardJs } from '@moonwave99/fretboard.js';
-import React, { useEffect, useRef } from 'react';
-import FretboardTemplate from '../FretboardTemplate';
+// import { Fretboard as FretboardJs } from '@moonwave99/fretboard.js';
+import {
+  Fretboard,
+  FretboardRef,
+  Note,
+  NotePosition,
+} from '@mikefowler/fretboard';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useSettings } from '../providers/SettingsProvider';
 
@@ -9,23 +14,29 @@ export interface FretboardPageProps {
 }
 
 const FretboardPage: React.FC<FretboardPageProps> = ({ foo }) => {
-  const fretboardRef = useRef<FretboardJs>();
+  const fretboard = useRef<FretboardRef>(null);
+  const [notes, setNotes] = useState<NotePosition[]>([]);
+
   const {
     settings: { tonic, mode },
   } = useSettings();
 
   useEffect(() => {
-    console.log({ tonic, mode });
+    const scale = fretboard.current?.getScale({ type: mode, root: tonic });
 
-    setTimeout(() => {
-      fretboardRef.current?.renderScale({
-        type: mode,
-        root: tonic,
-      });
-    }, 100);
-  }, []);
+    setNotes(scale ?? []);
+  }, [tonic, mode]);
 
-  return <FretboardTemplate id="fretboard" ref={fretboardRef} />;
+  return (
+    <Fretboard marginLeft={100} height={300} frets={[1, 12]} ref={fretboard}>
+      {notes.map((placement) => (
+        <Note
+          {...placement}
+          label={`${placement.note.letter}${placement.note.acc}`}
+        />
+      ))}
+    </Fretboard>
+  );
 };
 
 export default FretboardPage;

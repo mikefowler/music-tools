@@ -1,4 +1,10 @@
-import { FretboardSystem } from '@moonwave99/fretboard.js';
+import {
+  Fretboard,
+  FretboardRef,
+  Note,
+  NotePosition,
+  ScalePosition,
+} from '@mikefowler/fretboard';
 import {
   Chip,
   ChipProps,
@@ -7,11 +13,10 @@ import {
   Tooltip,
   useTheme,
 } from '@mui/joy';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaTrash } from 'react-icons/fa6';
 import { Chord } from 'tonal';
 import { useSettings } from '../../providers/SettingsProvider';
-import Fretboard from '../fretboard/Fretboard';
 
 export interface ChordTableRowProps {
   chord: string;
@@ -37,26 +42,62 @@ const ChordTableRow: React.FC<ChordTableRowProps> = ({
   showScaleTones: showKeyTones,
 }) => {
   const theme = useTheme();
+  const fretboard = useRef<FretboardRef>(null);
   const { settings } = useSettings();
   const [open, setOpen] = useState(true);
-  const fullChord = Chord.get(c);
-  const chordNotes = fullChord.notes;
-  const system = new FretboardSystem();
-  const scale = system.getScale({
-    type: settings.mode,
-    root: settings.tonic,
-  });
-  const keyNotes = Array.from(new Set(scale.map((p) => p.note ?? '')));
-  let allNotes = chordNotes;
+  const [positions, setPositions] = useState<NotePosition[]>([]);
+  const [chordPositions, setChordPositions] = useState<ScalePosition[]>([]);
+  const fullChord = useMemo(() => Chord.get(c), [c]);
+  const chordNotes = useMemo(() => fullChord.notes, [fullChord]);
+
+  useEffect(() => {
+    const positions =
+      fretboard.current?.getScale({
+        type: settings.mode,
+        root: settings.tonic,
+      }) ?? [];
+
+    setPositions(positions);
+
+    setChordPositions(
+      positions.filter((position) => {
+        return chordNotes.includes(
+          `${position.note.letter}${position.note.acc}`,
+        );
+      }),
+    );
+  }, [fretboard]);
+
+  let renderedPositions = chordPositions;
 
   if (showKeyTones) {
-    allNotes = Array.from(new Set([...chordNotes, ...keyNotes]));
+    renderedPositions = positions;
   }
 
-  const dots = system.getPositionsForNotes(allNotes);
-
-  // console.log({ chordNotes, keyNotes, allNotes });
-  // console.log({ dots });
+  // const getDotProperties = useCallback(
+  //   (note: string) => {
+  //     if (note === chordNotes[0]) {
+  //       // Chord root
+  //       return {
+  //         color: 'white',
+  //         background: theme.vars.palette.primary[500],
+  //       };
+  //     } else if (!chordNotes.includes(note) && keyNotes.includes(note)) {
+  //       // Scale tones
+  //       return {
+  //         color: 'black',
+  //         background: theme.vars.palette.neutral[300],
+  //       };
+  //     } else {
+  //       // All others
+  //       return {
+  //         color: 'black',
+  //         background: theme.vars.palette.primary[300],
+  //       };
+  //     }
+  //   },
+  //   [chordNotes, keyNotes],
+  // );
 
   return (
     <Fragment key={c}>
@@ -136,37 +177,25 @@ const ChordTableRow: React.FC<ChordTableRowProps> = ({
                 boxShadow: 'inset 0 3px 6px 0 rgba(0 0 0 / 0.08)',
               }}
             >
-              <Fretboard
-                id={`fretboard-${c}`}
-                notes={dots}
-                dotTextColor={({ note }) => {
-                  if (note === chordNotes[0]) {
-                    // Chord root
-                    return 'white';
-                  } else if (
-                    !chordNotes.includes(note) &&
-                    keyNotes.includes(note)
-                  ) {
-                    // Scale tones
-                    return 'black';
-                  } else {
-                    // All others
-                    return 'black';
-                  }
-                }}
-                dotFill={({ note }) => {
-                  if (note === chordNotes[0]) {
-                    // Chord root fill
-                    return theme.vars.palette.primary[500];
-                  } else if (chordNotes.includes(note)) {
-                    // Chord note fill
-                    return theme.vars.palette.primary[300];
-                  }
+              <Fretboard height={300} ref={fretboard}>
+                {renderedPositions.map((position) => {
+                  console.log('root:', fullChord.notes[0]);
+                  console.log('position:', position.note.letter);
 
-                  // All others (e.g. scale tones)
-                  return theme.vars.palette.neutral[200];
-                }}
-              />
+                  return (
+                    <Note
+                      string={position.string}
+                      fret={position.fret}
+                      label={`${position.note.letter}${position.note.acc}`}
+                      stroke={
+                        position.note.letter === fullChord.notes[0]
+                          ? 'blue'
+                          : 'grey'
+                      }
+                    />
+                  );
+                })}
+              </Fretboard>
             </Sheet>
           </td>
         </tr>
