@@ -1,18 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Metronome from '../components/Metronome';
 
 export interface HomePageProps {}
 
 const HomePage: React.FC<HomePageProps> = () => {
   return (
-    <ul>
-      <li>
-        <Link to="/fretboard">Fretboard</Link>
-      </li>
-      <li>
-        <Link to="/chords">Chords</Link>
-      </li>
-    </ul>
+    <>
+      <Metronome />
+    </>
   );
 };
 
