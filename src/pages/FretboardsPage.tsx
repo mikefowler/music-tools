@@ -3,9 +3,9 @@ import '@fontsource/inter';
 import { Box, Button, IconButton, Tooltip } from '@mui/joy';
 import React, { useState } from 'react';
 
-import { Fretboard } from '@mikefowler/fretboard';
 import { MdGridOff, MdGridOn } from 'react-icons/md';
 import EditableText from '../EditableText';
+import FretboardChart from '../components/FretboardChart';
 
 const FretboardsPage: React.FC = () => {
   const [fretboardCount, setFretboardCount] = useState(1);
@@ -52,7 +52,10 @@ const FretboardsPage: React.FC = () => {
             {Array(fretboardCount)
               .fill(0)
               .map((_, i) => (
-                <Fretboard key={i} height={300} />
+                <FretboardChart
+                  key={i}
+                  onRemove={() => console.log('remove me')}
+                />
               ))}
           </Box>
         </>
