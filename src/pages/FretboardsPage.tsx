@@ -8,26 +8,40 @@ import EditableText from '../EditableText';
 import FretboardChart from '../components/FretboardChart';
 
 const FretboardsPage: React.FC = () => {
-  const [fretboardCount, setFretboardCount] = useState(1);
+  const [fretboards, setFretboards] = useState<Set<string>>(new Set());
   const [useGrid, setUseGrid] = useState(false);
 
   const toggleGrid = () => setUseGrid((previous) => !previous);
-  const addFretboard = () => setFretboardCount((previous) => previous + 1);
+
+  const addFretboard = () =>
+    setFretboards((previous) => {
+      const newFretboards = new Set(previous);
+      newFretboards.add(crypto.randomUUID());
+      return newFretboards;
+    });
+
+  const removeFretboard = (id: string) =>
+    setFretboards((previous) => {
+      const newFretboards = new Set(previous);
+      newFretboards.delete(id);
+      return newFretboards;
+    });
 
   return (
     <>
-      {fretboardCount > 1 && (
+      {fretboards.size > 1 && (
         <Tooltip title="Display fretboards in grid">
           <IconButton onClick={toggleGrid}>
             {useGrid ? <MdGridOn /> : <MdGridOff />}
           </IconButton>
         </Tooltip>
       )}
-      {fretboardCount > 0 && (
+
+      {fretboards.size > 0 && (
         <Button onClick={addFretboard}>Add Fretboard</Button>
       )}
 
-      {fretboardCount === 0 && (
+      {fretboards.size === 0 && (
         <Box textAlign="center" pt={8}>
           <Box mb={3}>Click on "Add Fretboard" to get started.</Box>
 
@@ -37,7 +51,7 @@ const FretboardsPage: React.FC = () => {
         </Box>
       )}
 
-      {fretboardCount > 0 && (
+      {fretboards.size > 0 && (
         <>
           <Box display="flex" flexDirection="row" justifyContent="center">
             <EditableText
@@ -49,14 +63,9 @@ const FretboardsPage: React.FC = () => {
             display={useGrid ? 'grid' : 'block'}
             gridTemplateColumns="repeat(auto-fit, minmax(min(100%/2, max(64px, 100%/2)), 1fr))"
           >
-            {Array(fretboardCount)
-              .fill(0)
-              .map((_, i) => (
-                <FretboardChart
-                  key={i}
-                  onRemove={() => console.log('remove me')}
-                />
-              ))}
+            {Array.from(fretboards).map((f) => (
+              <FretboardChart key={f} onRemove={() => removeFretboard(f)} />
+            ))}
           </Box>
         </>
       )}
