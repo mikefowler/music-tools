@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { KeyType } from '../components/KeySlider';
-import SettingsContext, { Settings } from './settingsContext';
+import SettingsContext, { Enharmonic, Settings } from './settingsContext';
 
 const STORAGE_KEY = 'mt-settings';
 
@@ -15,6 +15,7 @@ const defaultSettings: Settings = {
   // Tonic + Mode
   tonic: 'C',
   mode: 'ionian',
+  enharmonic: Enharmonic.FLAT,
 
   // Drawer
   drawerIsOpen: false,
@@ -78,14 +79,21 @@ const SettingsProvider: React.FC<PropsWithChildren> = ({ children }) => {
     []
   );
 
+  const setEnharmonic = useCallback(
+    (enharmonic: Enharmonic) =>
+      setSettings((previous) => ({ ...previous, enharmonic })),
+    []
+  );
+
   const context = useMemo(
     () => ({
       settings,
       setTonic,
       setMode,
+      setEnharmonic,
       toggleDrawer,
     }),
-    [settings, setTonic, setMode, toggleDrawer]
+    [settings, setTonic, setMode, toggleDrawer, setEnharmonic]
   );
 
   return (

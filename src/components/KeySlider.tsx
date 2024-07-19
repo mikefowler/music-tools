@@ -1,5 +1,8 @@
 import { Slider, SliderProps } from '@mui/joy';
 import React from 'react';
+import * as tonal from 'tonal';
+import { useSettings } from '../providers/SettingsProvider';
+import { Enharmonic } from '../providers/settingsContext';
 
 const keys = [
   'C',
@@ -41,7 +44,17 @@ const KeySlider: React.FC<KeySliderProps> = ({
   keyValue,
   ...sliderProps
 }) => {
-  const onChange: SliderProps['onChange'] = (e, value) => {
+  const { settings } = useSettings();
+
+  const marksWithEnharmonics = marks.map((mark) => ({
+    ...mark,
+    label:
+      settings.enharmonic !== Enharmonic.SHARP
+        ? mark.label
+        : tonal.Note.enharmonic(mark.label),
+  }));
+
+  const onChange: SliderProps['onChange'] = (_e, value) => {
     const key = getKeyFromValue(value as number);
     onSelectKey?.(key);
   };
@@ -51,7 +64,7 @@ const KeySlider: React.FC<KeySliderProps> = ({
   return (
     <Slider
       aria-label="Key"
-      marks={marks}
+      marks={marksWithEnharmonics}
       value={sliderValue}
       step={10}
       orientation="vertical"

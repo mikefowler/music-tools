@@ -1,5 +1,7 @@
 import html2canvas from 'html2canvas';
-import InteractiveFretboard from './InteractiveFretboard';
+import InteractiveFretboard, {
+  InteractiveFretboardRef,
+} from './InteractiveFretboard';
 import { useRef } from 'react';
 import { Box, IconButton, Stack, Tooltip } from '@mui/joy';
 import {
@@ -16,6 +18,7 @@ interface FretboardChartProps {
 
 const FretboardChart: React.FC<FretboardChartProps> = ({ onRemove }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const fretboardRef = useRef<InteractiveFretboardRef>(null);
 
   const handleSaveImage = async () => {
     if (!containerRef.current) return;
@@ -45,8 +48,7 @@ const FretboardChart: React.FC<FretboardChartProps> = ({ onRemove }) => {
   };
 
   const handleReset = () => {
-    // Reset the fretboard
-    // @TODO
+    fretboardRef.current?.reset();
   };
 
   return (
@@ -89,7 +91,7 @@ const FretboardChart: React.FC<FretboardChartProps> = ({ onRemove }) => {
         }}
       >
         <div ref={containerRef}>
-          <InteractiveFretboard height={300} />
+          <InteractiveFretboard height={300} ref={fretboardRef} />
         </div>
       </Box>
     </Box>

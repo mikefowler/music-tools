@@ -3,6 +3,7 @@ import {
   DialogContent,
   DialogTitle,
   Drawer,
+  IconButton,
   Link,
   ModalClose,
   Stack,
@@ -10,7 +11,7 @@ import {
   Typography,
 } from '@mui/joy';
 import React from 'react';
-import { FaGuitar } from 'react-icons/fa6';
+import { FaGear, FaGuitar } from 'react-icons/fa6';
 
 import { useSettings } from '../providers/SettingsProvider';
 
@@ -41,12 +42,12 @@ const Header: React.FC<HeaderProps> = () => {
         </Link>
         <Box>
           <Stack direction="row" spacing={4}>
-            <Link href="/fretboard">Fretboard</Link>
+            <Link href="/fretboards">Fretboards</Link>
             <Link href="/chords">Chords</Link>
             <Link href="/sheet">Sheet</Link>
-            {/* <IconButton onClick={toggleDrawer} variant="outlined">
+            <IconButton onClick={() => toggleDrawer()} variant="outlined">
               <FaGear />
-            </IconButton> */}
+            </IconButton>
           </Stack>
         </Box>
       </Box>

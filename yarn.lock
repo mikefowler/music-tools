@@ -558,10 +558,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.4.0.tgz#08d6c5e20cf7e4cc02fd181c4b0c225cd31dbb60"
   integrity sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==
 
-"@mikefowler/fretboard@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@mikefowler/fretboard/-/fretboard-0.7.1.tgz#2de196505d293372dd74692566e40f5b3d8a8314"
-  integrity sha512-fKWNsgGrE15Sr0CrviI+tQlnCctVdramSPVg5xFYALuIZN/8qTNAK1/CQiqvyg66NrFHUbXKD+Ptss8AGOrqAg==
+"@mikefowler/fretboard@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@mikefowler/fretboard/-/fretboard-0.8.0.tgz#d29f6305a14dbb027dc55710e1a40820242de320"
+  integrity sha512-EnlEYiSQ9SGQ7eLgLk7HB5se/FmzW1wFSe415SXItGI7LxgLyYU1cq759nE/dbKbwyoBn4zHd6jnnkoBFqIvnA==
   dependencies:
     "@react-hook/size" "^2.1.2"
     "@react-spring/web" "^9.7.3"

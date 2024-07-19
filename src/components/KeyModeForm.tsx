@@ -1,15 +1,25 @@
-import { Box, FormControl, FormLabel, Stack, StackProps } from '@mui/joy';
+import {
+  Box,
+  FormControl,
+  FormLabel,
+  Stack,
+  StackProps,
+  Switch,
+} from '@mui/joy';
 import React from 'react';
 import { useSettings } from '../providers/SettingsProvider';
 import KeySlider from './KeySlider';
 import ModeSelect from './ModeSelect';
+import { Enharmonic } from '../providers/settingsContext';
 
 export interface KeyModeFormProps {
   direction?: StackProps['direction'];
 }
 
 const KeyModeForm: React.FC<KeyModeFormProps> = ({ direction }) => {
-  const { settings, setTonic, setMode } = useSettings();
+  const { settings, setTonic, setMode, setEnharmonic } = useSettings();
+
+  const checked = settings.enharmonic === Enharmonic.SHARP;
 
   return (
     <Stack direction={direction} useFlexGap spacing={8} width="100%">
@@ -21,6 +31,20 @@ const KeyModeForm: React.FC<KeyModeFormProps> = ({ direction }) => {
             sx={{ margin: '0 auto', fontWeight: 'bold' }}
           >
             Tonic
+            <Box ml={4}>
+              <Switch
+                color={'neutral'}
+                slotProps={{ input: { 'aria-label': 'dark mode' } }}
+                startDecorator={Enharmonic.FLAT}
+                endDecorator={Enharmonic.SHARP}
+                checked={checked}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  setEnharmonic(
+                    event.target.checked ? Enharmonic.SHARP : Enharmonic.FLAT
+                  )
+                }
+              />
+            </Box>
           </FormLabel>
           <KeySlider
             keyValue={settings.tonic}

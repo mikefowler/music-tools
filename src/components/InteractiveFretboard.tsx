@@ -7,7 +7,7 @@ import {
   Position,
   useInteraction,
 } from '@mikefowler/fretboard';
-import React, { useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import isNotNull from '../utils/isNotNull';
 
 const getPositionKey = (position: Position) =>
@@ -15,7 +15,17 @@ const getPositionKey = (position: Position) =>
 
 export interface InteractiveFretboardProps extends FretboardProps {}
 
-const InteractiveFretboard: React.FC<InteractiveFretboardProps> = (props) => {
+export interface InteractiveFretboardRef {
+  reset: () => void;
+}
+
+const InteractiveFretboard = forwardRef<
+  InteractiveFretboardRef,
+  InteractiveFretboardProps
+>(function InteractiveFretboard(
+  props: InteractiveFretboardProps,
+  forwardedRef
+) {
   const fretboard = useRef<FretboardRef>(null);
   const {
     events,
@@ -24,7 +34,16 @@ const InteractiveFretboard: React.FC<InteractiveFretboardProps> = (props) => {
     hoveredPlacements,
     selectedPlacements,
     placements,
+    reset,
   } = useInteraction(fretboard);
+
+  useImperativeHandle(
+    forwardedRef,
+    () => ({
+      reset,
+    }),
+    [reset]
+  );
 
   return (
     <Fretboard {...props} {...events} ref={fretboard}>
@@ -95,6 +114,6 @@ const InteractiveFretboard: React.FC<InteractiveFretboardProps> = (props) => {
       })}
     </Fretboard>
   );
-};
+});
 
 export default InteractiveFretboard;
