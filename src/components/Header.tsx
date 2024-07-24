@@ -45,6 +45,7 @@ const Header: React.FC<HeaderProps> = () => {
             <Link href="/fretboards">Fretboards</Link>
             <Link href="/chords">Chords</Link>
             <Link href="/sheet">Sheet</Link>
+            <Link href="/key">Key</Link>
             <IconButton onClick={() => toggleDrawer()} variant="outlined">
               <FaGear />
             </IconButton>

@@ -1,10 +1,8 @@
 import { createContext } from 'react';
 
-import { KeyType } from '../components/KeySlider';
-
 export enum Enharmonic {
-  SHARP = '♯',
-  FLAT = '♭',
+  SHARP = '#', // '♯'
+  FLAT = 'b', // '♭'
 }
 
 export interface Settings {
@@ -19,7 +17,7 @@ export interface Settings {
 
 export interface SettingsInterface {
   settings: Settings;
-  setTonic: (tonic: KeyType) => void;
+  setTonic: (tonic: string) => void;
   setMode: (mode: string) => void;
   setEnharmonic: (en: Enharmonic) => void;
   toggleDrawer: (open?: boolean) => void;

@@ -10,6 +10,7 @@ import FretboardsPage from './pages/FretboardsPage';
 import ChordsPage from './pages/ChordsPage';
 import SheetPage from './pages/SheetPage';
 import AppProvider from './providers/AppProvider';
+import KeyPage from './pages/KeyPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,6 +19,7 @@ const router = createBrowserRouter(
       <Route path="/fretboards" element={<FretboardsPage />} />
       <Route path="/chords" element={<ChordsPage />} />
       <Route path="/sheet" element={<SheetPage />} />
+      <Route path="/key" element={<KeyPage />} />
     </Route>
   )
 );
