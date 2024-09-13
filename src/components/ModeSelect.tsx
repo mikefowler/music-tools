@@ -3,7 +3,7 @@ import upperFirst from 'lodash/upperFirst';
 import React from 'react';
 import { Mode } from 'tonal';
 
-type TypedSelectProps = SelectProps<{}, false>;
+type TypedSelectProps = SelectProps<string, false>;
 
 export interface ModeSelectProps extends TypedSelectProps {
   onSelectMode?: (mode: string) => void;
@@ -15,7 +15,7 @@ const ModeSelect: React.FC<ModeSelectProps> = ({
   onSelectMode,
   ...selectProps
 }) => {
-  const onChange: TypedSelectProps['onChange'] = (e, value) => {
+  const onChange: TypedSelectProps['onChange'] = (_e, value) => {
     if (value) onSelectMode?.(String(value));
   };
 
@@ -24,6 +24,7 @@ const ModeSelect: React.FC<ModeSelectProps> = ({
       {modes.map((m) => (
         <Option key={m.name} value={m.name}>
           {upperFirst(m.name)}
+          {!!m.aliases.length && ` (${m.aliases.join(', ')})`}
         </Option>
       ))}
     </Select>
