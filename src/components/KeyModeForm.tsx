@@ -11,6 +11,7 @@ import { useSettings } from '../providers/SettingsProvider';
 import KeySlider from './KeySlider';
 import ModeSelect from './ModeSelect';
 import { Enharmonic } from '../providers/settingsContext';
+import * as enharmonicUtils from '../utils/enharmonic';
 
 export interface KeyModeFormProps {
   direction?: StackProps['direction'];
@@ -35,8 +36,8 @@ const KeyModeForm: React.FC<KeyModeFormProps> = ({ direction }) => {
               <Switch
                 color={'neutral'}
                 slotProps={{ input: { 'aria-label': 'dark mode' } }}
-                startDecorator={Enharmonic.FLAT}
-                endDecorator={Enharmonic.SHARP}
+                startDecorator={enharmonicUtils.toUnicode(Enharmonic.FLAT)}
+                endDecorator={enharmonicUtils.toUnicode(Enharmonic.SHARP)}
                 checked={checked}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                   setEnharmonic(
@@ -47,7 +48,7 @@ const KeyModeForm: React.FC<KeyModeFormProps> = ({ direction }) => {
             </Box>
           </FormLabel>
           <KeySlider
-            keyValue={settings.tonic}
+            selectedKey={settings.tonic}
             onSelectKey={setTonic}
             orientation="horizontal"
             slotProps={{

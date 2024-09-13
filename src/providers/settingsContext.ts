@@ -7,7 +7,7 @@ export enum Enharmonic {
 
 export interface Settings {
   // Key + Mode
-  tonic: KeyType;
+  tonic: string;
   mode: string;
   enharmonic: Enharmonic;
 

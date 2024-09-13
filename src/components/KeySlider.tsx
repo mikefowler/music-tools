@@ -3,76 +3,74 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import * as tonal from 'tonal';
 import { useSettings } from '../providers/SettingsProvider';
 import { Enharmonic } from '../providers/settingsContext';
-
-export interface KeySliderProps extends SliderProps {
+import * as enharmonicUtils from '../utils/enharmonic';
+export interface KeySliderProps extends Omit<SliderProps, 'value'> {
   onSelectKey?: (key: string) => void;
-  keyValue: string;
+  selectedKey: string;
 }
 
 const KeySlider: React.FC<KeySliderProps> = ({
   onSelectKey,
-  keyValue,
+  selectedKey,
   ...sliderProps
 }) => {
-  const [key, setKey] = useState(keyValue);
   const { settings } = useSettings();
 
   const keys = useMemo(
     () =>
-      tonal.Range.chromatic(['C2', 'C3'], {
+      tonal.Range.chromatic(['C2', 'B2'], {
         sharps: settings.enharmonic === Enharmonic.SHARP,
         pitchClass: true,
       }),
     [settings.enharmonic]
   );
 
-  const marks: { value: number; label: string }[] = useMemo(
-    () =>
-      keys.map((key, index) => ({
-        value: 10 * index,
-        label: key as unknown as KeyType,
-      })),
-    [keys]
-  );
+  const marks: { value: number; label: string }[] = useMemo(() => {
+    return [...Array(11).keys()].map((value) => ({
+      value,
+      label: keys[value],
+    }));
+  }, [keys]);
 
-  const max = Math.max(...marks.map((m) => m.value));
+  const keyToValue = useCallback(
+    (key: string) => {
+      const mark = marks.find((mark) => mark.label === key);
 
-  const getKeyFromValue = useCallback(
-    (value: number) => marks.find((m) => m.value === value)?.label ?? keys[0],
-    [keys, marks]
-  );
-
-  const getValueFromKey = useCallback(
-    (key: string) => marks.find((m) => m.label === key)?.value,
+      return mark?.value ?? 0;
+    },
     [marks]
   );
 
-  const onChange = useCallback(
-    (_e: Event, value: number | number[]) => {
-      const nextKey = getKeyFromValue(value as number);
-      setKey?.(nextKey);
+  const [value, setValue] = useState(keyToValue(selectedKey));
+
+  const max = Math.max(...marks.map((m) => m.value));
+
+  const handleChange = useCallback(
+    (value: number) => {
+      const key = marks[value].label;
+
+      setValue(value);
+      onSelectKey?.(key);
     },
-    [getKeyFromValue]
+    [marks, onSelectKey]
   );
 
   useEffect(() => {
-    onSelectKey?.(key);
-  }, [key, onSelectKey]);
+    const key = marks[value].label;
 
-  const sliderValue = useMemo(
-    () => getValueFromKey(keyValue),
-    [keyValue, getValueFromKey]
-  );
+    onSelectKey?.(key);
+  }, [settings.enharmonic, marks, onSelectKey, value]);
 
   return (
     <Slider
       aria-label="Key"
       marks={marks}
-      value={sliderValue}
-      step={10}
+      value={value}
+      step={1}
       orientation="vertical"
       max={max}
-      onChange={onChange}
+      onChange={(_event, value) => handleChange(value as number)}
+      valueLabelFormat={(label) => enharmonicUtils.replaceWithUnicode(label)}
       {...sliderProps}
     />
   );

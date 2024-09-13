@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { KeyType } from '../components/KeySlider';
 import SettingsContext, { Enharmonic, Settings } from './settingsContext';
 
 const STORAGE_KEY = 'mt-settings';
@@ -70,7 +69,7 @@ const SettingsProvider: React.FC<PropsWithChildren> = ({ children }) => {
   );
 
   const setTonic = useCallback(
-    (tonic: KeyType) => setSettings((previous) => ({ ...previous, tonic })),
+    (tonic: string) => setSettings((previous) => ({ ...previous, tonic })),
     []
   );
 

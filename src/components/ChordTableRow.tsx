@@ -169,11 +169,8 @@ const ChordTableRow: React.FC<ChordTableRowProps> = ({
                 boxShadow: 'inset 0 3px 6px 0 rgba(0 0 0 / 0.08)',
               }}
             >
-              <Fretboard height={300} ref={fretboard}>
+              <Fretboard height={200} ref={fretboard}>
                 {renderedPositions.map((position) => {
-                  console.log('root:', fullChord.notes[0]);
-                  console.log('position:', position.note.letter);
-
                   return (
                     <Note
                       string={position.string}
