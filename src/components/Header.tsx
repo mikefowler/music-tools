@@ -14,6 +14,7 @@ import React from 'react';
 import { FaGear, FaGuitar } from 'react-icons/fa6';
 
 import { useSettings } from '../providers/SettingsProvider';
+import Metronome from './Metronome';
 
 export interface HeaderProps {}
 
@@ -56,7 +57,12 @@ const Header: React.FC<HeaderProps> = () => {
       <Drawer open={settings.drawerIsOpen} onClose={() => toggleDrawer(false)}>
         <DialogTitle>Settings</DialogTitle>
         <ModalClose />
-        <DialogContent>{/* Placeholder */}</DialogContent>
+        <DialogContent sx={{ p: 2 }}>
+          <Box my={2}>
+            <Typography>Metronome</Typography>
+            <Metronome />
+          </Box>
+        </DialogContent>
       </Drawer>
     </Box>
   );
