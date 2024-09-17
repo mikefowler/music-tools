@@ -15,6 +15,8 @@ import { FaGear, FaGuitar } from 'react-icons/fa6';
 
 import { useSettings } from '../providers/SettingsProvider';
 import Metronome from './Metronome';
+import ColorSchemeToggle from './ColorSchemeToggle';
+import theme from '../utils/theme';
 
 export interface HeaderProps {}
 
@@ -26,7 +28,11 @@ const Header: React.FC<HeaderProps> = () => {
       component="header"
       p={4}
       displayPrint="none"
-      sx={{ position: 'sticky', top: 0, background: 'white' }}
+      sx={{
+        position: 'sticky',
+        top: 0,
+        background: theme.vars.palette.background.surface,
+      }}
       zIndex={10}
     >
       <Box display="flex" justifyContent="space-between">
@@ -43,10 +49,11 @@ const Header: React.FC<HeaderProps> = () => {
         </Link>
         <Box>
           <Stack direction="row" spacing={4}>
-            <Link href="/fretboards">Fretboards</Link>
-            <Link href="/chords">Chords</Link>
-            <Link href="/sheet">Sheet</Link>
             <Link href="/key">Key</Link>
+            <Link href="/scales">Scales</Link>
+            {/* <Link href="/fretboards">Fretboards</Link> */}
+            {/* <Link href="/chords">Chords</Link> */}
+            <Link href="/sheet">Sheet</Link>
             <IconButton onClick={() => toggleDrawer()} variant="outlined">
               <FaGear />
             </IconButton>
@@ -61,6 +68,10 @@ const Header: React.FC<HeaderProps> = () => {
           <Box my={2}>
             <Typography>Metronome</Typography>
             <Metronome />
+          </Box>
+          <Box my={2}>
+            <Typography>Color scheme</Typography>
+            <ColorSchemeToggle />
           </Box>
         </DialogContent>
       </Drawer>

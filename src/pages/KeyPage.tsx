@@ -1,26 +1,52 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Page from '../components/Page';
-import { Chip, Sheet, Stack, Table, Tooltip, Typography } from '@mui/joy';
+import {
+  ButtonGroup,
+  Chip,
+  IconButton,
+  Sheet,
+  Stack,
+  Table,
+  Tooltip,
+  Typography,
+} from '@mui/joy';
 import { useSettings } from '../providers/SettingsProvider';
 import * as tonal from 'tonal';
-import { Fretboard, FretboardRef, Note } from '@mikefowler/fretboard';
+import {
+  Fretboard,
+  FretboardRef,
+  Note,
+  ScaleNotePlacement,
+} from '@mikefowler/fretboard';
 import { FaCheck } from 'react-icons/fa6';
 import * as enharmonicUtils from '../utils/enharmonic';
+import { MdOutlineFileCopy } from 'react-icons/md';
+import useScreenshot from '../hooks/useScreenshot';
 
 export interface KeyPageProps {}
 
 const KeyPage: React.FC<KeyPageProps> = () => {
   const { settings } = useSettings();
+
   const fretboardRef = useRef<FretboardRef>(null);
   const chordFretboardRef = useRef<FretboardRef>(null);
+  const fretboardContainerRef = useRef<HTMLDivElement>(null);
+
   const [selectedChord, setSelectedChord] = useState<string>();
   const [selectedNote, setSelectedNote] = useState<string>();
   const [showChromatics, setShowChromatics] = useState(false);
-  const title = useMemo(
-    () => `${settings.tonic} ${settings.mode}`,
-    [settings.tonic, settings.mode]
+  const [scalePlacements, setScalePlacements] = useState<ScaleNotePlacement[]>(
+    []
   );
-  const scale = tonal.Scale.get(title);
+  const [chordPlacements, setChordPlacements] = useState<ScaleNotePlacement[]>(
+    []
+  );
+
+  const scale = tonal.Scale.get(`${settings.tonic} ${settings.mode}`);
+
+  const title = `${scale.name} ${
+    scale.aliases.length ? `(${scale.aliases.join(', ')})` : ''
+  }`;
 
   const numerals = scale.intervals.map(
     (i) => tonal.RomanNumeral.get(tonal.Interval.get(i)).name
@@ -49,29 +75,39 @@ const KeyPage: React.FC<KeyPageProps> = () => {
     });
   };
 
-  const scalePlacements = fretboardRef.current
-    ? fretboardRef.current.system.scale({
-        type: settings.mode,
-        root: settings.tonic,
-      }).placements
-    : [];
-
-  const chordMeta = selectedChord ? tonal.Chord.get(selectedChord) : null;
-
-  const chordNotePlacements =
-    selectedChord && chordFretboardRef.current
-      ? chordFretboardRef.current.system.chord({
-          name: selectedChord,
-        })
+  useEffect(() => {
+    const placements = fretboardRef.current
+      ? fretboardRef.current.system.scale({
+          type: settings.mode,
+          root: settings.tonic,
+        }).placements
       : [];
 
-  const chordPlacements = scalePlacements.filter((placement) => {
-    return chordNotePlacements.some(
-      (chordPlacement) =>
-        chordPlacement.fret === placement.fret &&
-        chordPlacement.string === placement.string
-    );
-  });
+    setSelectedChord(undefined);
+    setChordPlacements([]);
+    setScalePlacements(placements);
+  }, [settings.mode, settings.tonic]);
+
+  useEffect(() => {
+    const chordNotePlacements =
+      selectedChord && chordFretboardRef.current
+        ? chordFretboardRef.current.system.chord({
+            name: selectedChord,
+          })
+        : [];
+
+    const chordPlacements = scalePlacements.filter((placement) => {
+      return chordNotePlacements.some(
+        (chordPlacement) =>
+          chordPlacement.fret === placement.fret &&
+          chordPlacement.string === placement.string
+      );
+    });
+
+    setChordPlacements(chordPlacements);
+  }, [scalePlacements, selectedChord]);
+
+  const chordMeta = selectedChord ? tonal.Chord.get(selectedChord) : null;
 
   const chordChromaticPlacements =
     fretboardRef.current?.system.positions.filter(
@@ -83,32 +119,53 @@ const KeyPage: React.FC<KeyPageProps> = () => {
 
   const handleShowChromatics = () => setShowChromatics((prev) => !prev);
 
+  const fretboardImage = useScreenshot(fretboardContainerRef);
+
   return (
-    <Page>
-      <Typography level="h1" mb={4}>
-        {title}
+    <Page title={title} stickyTitle>
+      <Typography>
+        <strong>Notes</strong>: {scale.notes.join(' - ')}
+      </Typography>
+      <Typography>
+        <strong>Intervals</strong>: {scale.intervals.join(', ')}
       </Typography>
 
-      <Fretboard
-        ref={fretboardRef}
-        height={200}
-        markerSize={1.3}
-        showFretNumbers
-      >
-        {scalePlacements.map((p) => (
-          <Note
-            key={`${p.string}-${p.fret}`}
-            fret={p.fret}
-            string={p.string}
-            label={p.note.name}
-            fill={p.note.name === settings.tonic ? 'black' : 'white'}
-            textFill={p.note.name === settings.tonic ? 'white' : 'black'}
-          />
-        ))}
-      </Fretboard>
+      <Stack direction="row" justifyContent="flex-end" mb={2}>
+        <ButtonGroup>
+          <Tooltip title="Copy fretboard to clipboard">
+            <IconButton size="sm" onClick={() => fretboardImage.copy()}>
+              <MdOutlineFileCopy />
+            </IconButton>
+          </Tooltip>
+        </ButtonGroup>
+      </Stack>
 
-      <Typography level="h3" component="h2" mt={4} mb={2}>
+      <div ref={fretboardContainerRef}>
+        <Fretboard
+          ref={fretboardRef}
+          height={200}
+          markerSize={1.3}
+          showFretNumbers
+        >
+          {scalePlacements.map((p) => (
+            <Note
+              key={`${p.string}-${p.fret}`}
+              fret={p.fret}
+              string={p.string}
+              label={p.note.name}
+              fill={p.note.name === settings.tonic ? 'black' : 'white'}
+              textFill={p.note.name === settings.tonic ? 'white' : 'black'}
+            />
+          ))}
+        </Fretboard>
+      </div>
+
+      <Typography level="h3" component="h2" mt={4} mb={1}>
         Chords
+      </Typography>
+
+      <Typography level="title-sm" component="h3" mb={2}>
+        Select any chord to display its notes on the fretboard.
       </Typography>
 
       <Sheet variant="soft" sx={{ p: 2 }}>
@@ -164,8 +221,12 @@ const KeyPage: React.FC<KeyPageProps> = () => {
 
       {chordMeta && (
         <>
-          <Typography level="h4" component="h3" mt={4} mb={2}>
+          <Typography level="h4" component="h3" mt={4} mb={1}>
             Notes
+          </Typography>
+
+          <Typography level="title-sm" mb={2}>
+            Select any note to highlight it on the fretboard.
           </Typography>
 
           <Stack direction="row" gap="8px">

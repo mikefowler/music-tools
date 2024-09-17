@@ -1,4 +1,3 @@
-import html2canvas from 'html2canvas';
 import InteractiveFretboard, {
   InteractiveFretboardRef,
 } from './InteractiveFretboard';
@@ -11,6 +10,7 @@ import {
   MdClose,
 } from 'react-icons/md';
 import EditableText from '../EditableText';
+import useScreenshot from '../hooks/useScreenshot';
 
 interface FretboardChartProps {
   onRemove?: () => void;
@@ -19,33 +19,7 @@ interface FretboardChartProps {
 const FretboardChart: React.FC<FretboardChartProps> = ({ onRemove }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const fretboardRef = useRef<InteractiveFretboardRef>(null);
-
-  const handleSaveImage = async () => {
-    if (!containerRef.current) return;
-
-    const canvas = await html2canvas(containerRef.current);
-    const jpg = canvas.toDataURL();
-
-    const link = document.createElement('a');
-    link.href = jpg;
-    link.download = `fretboard-${Date.now().valueOf()}`;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleCopyImage = async () => {
-    if (!containerRef.current) return;
-
-    const canvas = await html2canvas(containerRef.current);
-    const jpg = await new Promise<Blob>((resolve) => {
-      canvas.toBlob((blob) => {
-        if (blob) resolve(blob);
-      });
-    });
-    navigator.clipboard.write([new ClipboardItem({ 'image/png': jpg })]);
-  };
+  const fretboardScreenshot = useScreenshot(containerRef);
 
   const handleReset = () => {
     fretboardRef.current?.reset();
@@ -60,13 +34,13 @@ const FretboardChart: React.FC<FretboardChartProps> = ({ onRemove }) => {
         <Box displayPrint="none">
           <Stack direction="row">
             <Tooltip title="Download fretboard as image">
-              <IconButton onClick={handleSaveImage}>
+              <IconButton onClick={() => fretboardScreenshot.save()}>
                 <MdOutlineSave />
               </IconButton>
             </Tooltip>
 
             <Tooltip title="Copy fretboard to clipboard">
-              <IconButton onClick={handleCopyImage}>
+              <IconButton onClick={() => fretboardScreenshot.copy()}>
                 <MdOutlineFileCopy />
               </IconButton>
             </Tooltip>

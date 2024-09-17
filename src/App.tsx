@@ -11,12 +11,14 @@ import ChordsPage from './pages/ChordsPage';
 import SheetPage from './pages/SheetPage';
 import AppProvider from './providers/AppProvider';
 import KeyPage from './pages/KeyPage';
+import ScalesPage from './pages/ScalesPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="/" element={<HomePage />} />
       <Route path="/fretboards" element={<FretboardsPage />} />
+      <Route path="/scales" element={<ScalesPage />} />
       <Route path="/chords" element={<ChordsPage />} />
       <Route path="/sheet" element={<SheetPage />} />
       <Route path="/key" element={<KeyPage />} />
