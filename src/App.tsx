@@ -23,7 +23,10 @@ const router = createBrowserRouter(
       <Route path="/sheet" element={<SheetPage />} />
       <Route path="/key" element={<KeyPage />} />
     </Route>
-  )
+  ),
+  {
+    basename: import.meta.env.PROD ? '/making/music-tools' : './',
+  }
 );
 
 function App() {
