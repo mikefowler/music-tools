@@ -11,6 +11,7 @@
     to = "/index.html"
     status = 200
 
+  [[redirects]]
     from = "/making/music-tools/assets"
     to = "/assets/:splat"
     status = 200
