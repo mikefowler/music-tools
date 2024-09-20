@@ -3,9 +3,9 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/making/music',
+  base: '/making/music-tools',
   build: {
-    outDir: 'dist/making/music-tools',
+    outDir: 'dist',
   },
   plugins: [react()],
 });
