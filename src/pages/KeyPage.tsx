@@ -153,8 +153,8 @@ const KeyPage: React.FC<KeyPageProps> = () => {
               fret={p.fret}
               string={p.string}
               label={p.note.name}
-              fill={p.note.name === settings.tonic ? 'black' : 'white'}
-              textFill={p.note.name === settings.tonic ? 'white' : 'black'}
+              color={p.note.name === settings.tonic ? 'black' : 'white'}
+              textColor={p.note.name === settings.tonic ? 'white' : 'black'}
             />
           ))}
         </Fretboard>
@@ -269,8 +269,8 @@ const KeyPage: React.FC<KeyPageProps> = () => {
                   fret={p.fret}
                   string={p.string}
                   label={`${p.note.letter}${p.note.acc}`}
-                  fill={isSelected ? 'black' : 'white'}
-                  textFill={isSelected ? 'white' : 'black'}
+                  color={isSelected ? 'black' : 'white'}
+                  textColor={isSelected ? 'white' : 'black'}
                 />
               );
             })}
@@ -282,8 +282,8 @@ const KeyPage: React.FC<KeyPageProps> = () => {
                   fret={p.fret}
                   string={p.string}
                   label={`${p.note.letter}${p.note.acc}`}
-                  fill={p.note.name === settings.tonic ? 'black' : 'white'}
-                  textFill={p.note.name === settings.tonic ? 'white' : 'black'}
+                  color={p.note.name === settings.tonic ? 'black' : 'white'}
+                  textColor={p.note.name === settings.tonic ? 'white' : 'black'}
                   opacity={0.1}
                 />
               ))}

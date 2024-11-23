@@ -13,6 +13,8 @@ import AppProvider from './providers/AppProvider';
 import KeyPage from './pages/KeyPage';
 import ScalesPage from './pages/ScalesPage';
 
+console.log(import.meta.env.PROD);
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
@@ -25,7 +27,7 @@ const router = createBrowserRouter(
     </Route>
   ),
   {
-    basename: import.meta.env.PROD ? '/making/music-tools' : './',
+    basename: import.meta.env.PROD ? '/making/music-tools' : '/',
   }
 );
 
