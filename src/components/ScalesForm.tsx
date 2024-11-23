@@ -33,7 +33,6 @@ const ScalesForm: React.FC<ScalesFormProps> = ({ onChange, ...formProps }) => {
   const watch = useWatch<ScalesFormValues>({ control });
 
   useEffect(() => {
-    console.log(watch);
     onChange(watch);
   }, [onChange, watch]);
 
